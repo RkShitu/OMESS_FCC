@@ -238,6 +238,8 @@
         color: black;
       }
       .no-print { display: none !important; }
+      html, body { width: 100% !important; min-height: 0 !important; overflow: visible !important; }
+      #printable-report-area { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       .print-page {
         break-after: page;
         page-break-after: always;
@@ -835,6 +837,7 @@
             <i class="fa-solid fa-cart-plus text-amber-500"></i> নতুন বাজার যোগ করুন
           </h2>
           <form id="bazaar-form" onsubmit="handleBazaarSubmit(event)" class="space-y-4">
+            <input type="hidden" id="bazaar-edit-id">
             <div>
               <label class="block text-xs font-bold text-slate-600 uppercase mb-1">তারিখ</label>
               <input type="date" id="bazaar-date" required class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
@@ -857,9 +860,12 @@
               <input type="text" id="bazaar-desc" placeholder="যেমন: চাল, মুরগি, তেল" required class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
             </div>
 
-            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-plus"></i> বাজার খরচ যোগ করুন
-            </button>
+            <div class="flex items-center gap-2">
+              <button type="submit" id="bazaar-submit-btn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-plus"></i> বাজার খরচ যোগ করুন
+              </button>
+              <button type="button" id="bazaar-cancel-btn" onclick="cancelBazaarEdit()" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition">বাতিল</button>
+            </div>
           </form>
         </div>
 
@@ -869,7 +875,10 @@
             <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
               <i class="fa-solid fa-list-check text-slate-600"></i> চলতি মাসের বাজার তালিকা
             </h2>
-            <span class="text-xs text-slate-500">মোট এন্ট্রি: <span id="bazaar-count-badge">0</span>টি</span>
+            <div class="flex flex-wrap items-center justify-end gap-2">
+              <span class="text-xs font-bold bg-amber-50 text-amber-700 px-3.5 py-2 rounded-xl border border-amber-200 shadow-xs">সর্বমোট বাজার: ৳<span id="bazaar-total-display">0</span></span>
+              <span class="text-xs text-slate-500">মোট এন্ট্রি: <span id="bazaar-count-badge">0</span>টি</span>
+            </div>
           </div>
 
           <div class="overflow-x-auto">
@@ -954,10 +963,10 @@
               <div class="text-xs font-bold bg-indigo-50 text-indigo-700 px-3.5 py-2 rounded-xl border border-indigo-200 shadow-xs">
                 সর্বমোট এক্সট্রা বিল: ৳<span id="extrabill-total-display">0</span>
               </div>
-              <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl cursor-pointer">
-                <input type="checkbox" id="deduct-extra-from-bazaar" onchange="toggleExtraBillBazaarDeduction(this.checked)" class="w-4 h-4 accent-amber-600">
-                <span>এক্সট্রা বিল বাজার থেকে বাদ যাবে?</span>
-              </label>
+              <div class="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl">
+                <i class="fa-solid fa-circle-check text-amber-600"></i>
+                <span>মিল রেটের আগে এক্সট্রা বিল স্বয়ংক্রিয়ভাবে বাদ হবে</span>
+              </div>
             </div>
           </div>
 
@@ -2052,8 +2061,9 @@
       const totalBazaarGross = (mData.bazaar || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const totalDeposits = (mData.deposits || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const totalExtraBills = (mData.extraBills || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-      const deductExtraBills = !!mData.deductExtraBillsFromBazaar;
-      const totalBazaar = Math.max(0, totalBazaarGross - (deductExtraBills ? totalExtraBills : 0));
+      // Meal rate is based on shared bazaar cost only: gross bazaar minus all extra bills.
+      const deductExtraBills = true;
+      const totalBazaar = Math.max(0, totalBazaarGross - totalExtraBills);
       const mealRate = totalMeals > 0 ? (totalBazaar / totalMeals) : 0;
       // Cash movement follows the actual bazaar payments; the checkbox only reallocates
       // the bazaar amount between shared meal cost and member-specific extra bills.
@@ -2302,11 +2312,13 @@
 
     function showMealRateFormula() {
       const mData = getCurrentMonthData();
-      const bazaarTotal = (mData.bazaar || []).reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+      const grossBazaar = (mData.bazaar || []).reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+      const extraTotal = (mData.extraBills || []).reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+      const bazaarTotal = Math.max(0, grossBazaar - extraTotal);
       let mealsTotal = 0;
       Object.values(mData.meals || {}).forEach(day => Object.values(day || {}).forEach(entry => mealsTotal += getEntryMealTotal(entry)));
       const rate = mealsTotal > 0 ? bazaarTotal / mealsTotal : 0;
-      alert(`মিল রেটের হিসাব\\n\\nমোট বাজার খরচ: ৳${bazaarTotal.toFixed(2)}\\nমোট মিল: ${mealsTotal} টি\\n\\nমিল রেট = মোট বাজার খরচ ÷ মোট মিল\\n= ৳${bazaarTotal.toFixed(2)} ÷ ${mealsTotal}\\n= ৳${rate.toFixed(2)} প্রতি মিল`);
+      alert(`মিল রেটের হিসাব\\n\\nসর্বমোট বাজার: ৳${grossBazaar.toFixed(2)}\\nবাদ: এক্সট্রা বিল: ৳${extraTotal.toFixed(2)}\\nমিলের জন্য প্রকৃত বাজার: ৳${bazaarTotal.toFixed(2)}\\nমোট মিল: ${mealsTotal} টি\\n\\nমিল রেট = (সর্বমোট বাজার − এক্সট্রা বিল) ÷ মোট মিল\\n= ৳${bazaarTotal.toFixed(2)} ÷ ${mealsTotal}\\n= ৳${rate.toFixed(2)} প্রতি মিল`);
     }
 
     function openBazaarBreakdownModal() {
@@ -2323,13 +2335,11 @@
       document.getElementById('bazaar-breakdown-month').innerText = 'নির্বাচিত মাস: ' + (window.appData.activeMonth || '');
       document.getElementById('breakdown-bazaar-total').innerText = bazaarTotal.toLocaleString('en-US');
       document.getElementById('breakdown-extra-total').innerText = extraTotal.toLocaleString('en-US');
-      const deductExtras = !!mData.deductExtraBillsFromBazaar;
-      const netMarketTotal = Math.max(0, bazaarTotal - (deductExtras ? extraTotal : 0));
+      const deductExtras = true;
+      const netMarketTotal = Math.max(0, bazaarTotal - extraTotal);
       document.getElementById('breakdown-grand-total').innerText = netMarketTotal.toLocaleString('en-US');
       const breakdownGrandLabel = document.querySelector('#breakdown-grand-total')?.parentElement?.previousElementSibling;
-      if (breakdownGrandLabel) breakdownGrandLabel.innerText = deductExtras
-        ? 'মোট বাজার − এক্সট্রা বিল (মেসের বাজার খরচ)'
-        : 'মোট বাজার (এক্সট্রা বিল বাদ নয়)';
+      if (breakdownGrandLabel) breakdownGrandLabel.innerText = 'সর্বমোট বাজার − এক্সট্রা বিল (মিলের জন্য প্রকৃত বাজার খরচ)';
       bazaarRows.innerHTML = bazaar.length ? bazaar.map(x => `<tr class="border-t"><td class="p-2">${x.date || '-'}</td><td class="p-2">${memberName(x.memberId)}</td><td class="p-2">${x.description || x.desc || '-'}</td><td class="p-2 text-right font-semibold">৳${(parseFloat(x.amount)||0).toLocaleString('en-US')}</td></tr>`).join('') : '<tr><td colspan="4" class="p-4 text-center text-slate-400">কোনো বাজার এন্ট্রি নেই</td></tr>';
       extraRows.innerHTML = extras.length ? extras.map(x => `<tr class="border-t"><td class="p-2">${x.date || '-'}</td><td class="p-2">${memberName(x.memberId)}</td><td class="p-2">${x.description || x.desc || '-'}</td><td class="p-2 text-right font-semibold">৳${(parseFloat(x.amount)||0).toLocaleString('en-US')}</td></tr>`).join('') : '<tr><td colspan="4" class="p-4 text-center text-slate-400">কোনো এক্সট্রা বিল নেই</td></tr>';
       modal.classList.remove('hidden'); modal.classList.add('flex');
@@ -2779,48 +2789,92 @@
 
     function handleBazaarSubmit(event) {
       event.preventDefault();
+      const editId = document.getElementById('bazaar-edit-id').value;
       const date = document.getElementById('bazaar-date').value;
       const memberId = document.getElementById('bazaar-member').value;
       const amount = parseFloat(document.getElementById('bazaar-amount').value);
-      const desc = document.getElementById('bazaar-desc').value;
+      const desc = document.getElementById('bazaar-desc').value.trim();
 
-      if (!date || !memberId || !amount || !desc) {
-        showToast("সকল ঘর পুরন করুন", true);
+      if (!date || !memberId || !Number.isFinite(amount) || amount <= 0 || !desc) {
+        showToast("সকল ঘর সঠিকভাবে পূরণ করুন", true);
         return;
       }
 
       const mData = getCurrentMonthData();
-      mData.bazaar.unshift({ id: 'b_' + Date.now(), date, memberId, amount, desc });
-      
+      if (editId) {
+        const item = (mData.bazaar || []).find(x => x.id === editId);
+        if (item) {
+          item.date = date;
+          item.memberId = memberId;
+          item.amount = amount;
+          item.desc = desc;
+        }
+        showToast("বাজারের তথ্য সফলভাবে আপডেট হয়েছে");
+        cancelBazaarEdit();
+      } else {
+        mData.bazaar.unshift({ id: 'b_' + Date.now(), date, memberId, amount, desc });
+        document.getElementById('bazaar-amount').value = '';
+        document.getElementById('bazaar-desc').value = '';
+        showToast("নতুন বাজার খরচ যোগ করা হয়েছে!");
+      }
       persistData();
+    }
+
+    function editBazaarItem(id) {
+      const mData = getCurrentMonthData();
+      const item = (mData.bazaar || []).find(x => x.id === id);
+      if (!item) return;
+      document.getElementById('bazaar-edit-id').value = item.id;
+      document.getElementById('bazaar-date').value = item.date || '';
+      document.getElementById('bazaar-member').value = item.memberId || '';
+      document.getElementById('bazaar-amount').value = item.amount ?? '';
+      document.getElementById('bazaar-desc').value = item.desc || item.description || '';
+      document.getElementById('bazaar-submit-btn').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> বাজার আপডেট করুন';
+      document.getElementById('bazaar-cancel-btn').classList.remove('hidden');
+      document.getElementById('bazaar-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function cancelBazaarEdit() {
+      document.getElementById('bazaar-edit-id').value = '';
       document.getElementById('bazaar-amount').value = '';
       document.getElementById('bazaar-desc').value = '';
-      showToast("নতুন বাজার খরচ যোগ করা হয়েছে!");
+      document.getElementById('bazaar-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> বাজার খরচ যোগ করুন';
+      document.getElementById('bazaar-cancel-btn').classList.add('hidden');
+      const activeMonth = window.appData.activeMonth || '';
+      const today = new Date();
+      const todayKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+      document.getElementById('bazaar-date').value = todayKey.startsWith(activeMonth) ? todayKey : `${activeMonth}-01`;
     }
 
     function renderBazaarHistory() {
       const mData = getCurrentMonthData();
       const tbody = document.getElementById('bazaar-history-tbody');
       tbody.innerHTML = '';
+      const bazaarItems = mData.bazaar || [];
+      const grossTotal = bazaarItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+      document.getElementById('bazaar-count-badge').innerText = bazaarItems.length;
+      const totalDisplay = document.getElementById('bazaar-total-display');
+      if (totalDisplay) totalDisplay.innerText = grossTotal.toLocaleString('en-US', { maximumFractionDigits: 2 });
 
-      document.getElementById('bazaar-count-badge').innerText = (mData.bazaar || []).length;
-
-      if (!mData.bazaar || mData.bazaar.length === 0) {
+      if (!bazaarItems.length) {
         tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-400">কোন বাজার তথ্য নেই</td></tr>`;
         return;
       }
 
-      mData.bazaar.forEach(item => {
+      bazaarItems.forEach(item => {
         const member = window.appData.members.find(m => m.id === item.memberId) || { name: 'অজানা' };
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50";
         tr.innerHTML = `
-          <td class="py-3 px-4 text-slate-600 text-xs font-medium">${item.date}</td>
+          <td class="py-3 px-4 text-slate-600 text-xs font-medium">${item.date || '-'}</td>
           <td class="py-3 px-4 font-semibold text-slate-800">${member.name}</td>
-          <td class="py-3 px-4 text-slate-600">${item.desc}</td>
-          <td class="py-3 px-4 text-right font-bold text-amber-600">৳${item.amount.toLocaleString('en-US')}</td>
-          <td class="py-3 px-4 text-center">
-            <button onclick="deleteBazaarItem('${item.id}')" class="text-rose-500 hover:text-rose-700 p-1 transition">
+          <td class="py-3 px-4 text-slate-600">${item.desc || item.description || '-'}</td>
+          <td class="py-3 px-4 text-right font-bold text-amber-600">৳${(parseFloat(item.amount)||0).toLocaleString('en-US')}</td>
+          <td class="py-3 px-4 text-center whitespace-nowrap">
+            <button type="button" onclick="editBazaarItem('${item.id}')" title="এডিট করুন" aria-label="এডিট করুন" class="text-blue-600 hover:text-blue-800 p-1.5 transition">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button type="button" onclick="deleteBazaarItem('${item.id}')" title="মুছুন" aria-label="মুছুন" class="text-rose-500 hover:text-rose-700 p-1.5 transition">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </td>
@@ -2831,7 +2885,8 @@
 
     function deleteBazaarItem(id) {
       const mData = getCurrentMonthData();
-      mData.bazaar = mData.bazaar.filter(b => b.id !== id);
+      mData.bazaar = (mData.bazaar || []).filter(b => b.id !== id);
+      if (document.getElementById('bazaar-edit-id')?.value === id) cancelBazaarEdit();
       persistData();
       showToast("বাজার খরচের আইটেম মোছা হয়েছে");
     }
@@ -3290,13 +3345,25 @@
         if (typeof window.print !== 'function') {
           throw new Error('এই ব্রাউজারে window.print সমর্থিত নয়');
         }
+        let printCleanupDone = false;
         const cleanup = () => {
+          if (printCleanupDone) return;
+          printCleanupDone = true;
           document.body.classList.remove('final-print-a4', 'final-print-legal');
           printRows.forEach(row => row.style.display = '');
           window.removeEventListener('afterprint', cleanup);
+          document.removeEventListener('visibilitychange', onVisibilityChange);
+        };
+        const onVisibilityChange = () => {
+          if (document.visibilityState === 'visible' && printCleanupDone === false) {
+            // Some mobile browsers return from the print sheet without firing afterprint.
+            setTimeout(cleanup, 300);
+          }
         };
         window.addEventListener('afterprint', cleanup, { once: true });
+        document.addEventListener('visibilitychange', onVisibilityChange);
         window.focus();
+        // Keep this call synchronous with the button tap (required by mobile Chrome).
         window.print();
       } catch (err) {
         console.error('Print failed:', err);
