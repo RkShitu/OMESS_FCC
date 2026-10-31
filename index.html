@@ -363,7 +363,39 @@
         margin-bottom: 3mm;
       }
     }
-  </style>
+  
+    /* Monthly meal chart: keep date headings and teacher/member names visible
+       while scrolling vertically and horizontally inside the chart. */
+    .monthly-chart-scroll {
+      max-height: min(70vh, 720px);
+      overflow: auto;
+      overscroll-behavior: contain;
+      position: relative;
+      isolation: isolate;
+    }
+    .monthly-chart-scroll table { border-collapse: separate; border-spacing: 0; }
+    .monthly-chart-scroll thead th {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #f1f5f9;
+      box-shadow: 0 1px 0 #cbd5e1;
+    }
+    .monthly-chart-scroll thead th:first-child {
+      left: 0;
+      z-index: 30;
+      background: #f1f5f9;
+    }
+    .monthly-chart-scroll tbody td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+      background: #fff;
+    }
+    .monthly-chart-scroll tbody tr:last-child td:first-child {
+      background: #f1f5f9;
+    }
+</style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col pb-10">
 
@@ -759,7 +791,7 @@
             <i class="fa-solid fa-pen-to-square"></i> পুরো মাসের মিল চার্ট এডিট করুন
           </button>
         </div>
-        <div class="overflow-x-auto rounded-xl border border-slate-200">
+        <div class="monthly-chart-scroll rounded-xl border border-slate-200">
           <table class="w-full text-left text-xs border-collapse min-w-max">
             <thead>
               <tr id="monthly-chart-header" class="bg-slate-100 text-slate-700 font-bold border-b">
@@ -1260,7 +1292,7 @@
               <th class="border border-slate-300 p-2 text-center">মোট মিল</th>
               <th class="border border-slate-300 p-2 text-right">মিল খরচ (৳)</th>
               <th class="border border-slate-300 p-2 text-right">এক্সট্রা বিল (৳)</th>
-              <th class="border border-slate-300 p-2 text-right">সমন্বয় (৳)</th>
+              <th class="border border-slate-300 p-2 text-right">মোট বিল (৳)</th>
               <th class="border border-slate-300 p-2 text-right">মোট জমা (৳)</th>
               <th class="border border-slate-300 p-2 text-center">ফাইনাল অবস্থা</th>
             </tr>
@@ -1378,7 +1410,7 @@
   <!-- Google Apps Script API bridge -->
   <script>
     // IMPORTANT: after deploying Apps Script, paste the /exec URL here.
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbze9bWap03YAjEW_rWCufSjzqHxlr63fyF5Jzi-3xwOtaEEmG88LBulS5enplJ3I64T/exec';
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyKceDzyHEZsIrXiEeCmuJX7gLGKkEWJLc83C5MMUt653UfH-nfwVsqQTQhtSla2hV5/exec';
     let gasSessionToken = sessionStorage.getItem('MESS_GAS_SESSION') || '';
     let gasReady = false;
     let gasRevision = Number(sessionStorage.getItem('MESS_GAS_REVISION') || 0);
@@ -1428,25 +1460,44 @@
       return true;
     }
 
+    function gasStableStringify(value) {
+      if (Array.isArray(value)) return '[' + value.map(gasStableStringify).join(',') + ']';
+      if (value && typeof value === 'object') {
+        return '{' + Object.keys(value).sort().map(k => JSON.stringify(k) + ':' + gasStableStringify(value[k])).join(',') + '}';
+      }
+      return JSON.stringify(value);
+    }
+
     async function gasSaveData(data) {
-      if (!gasConfigured() || !gasSessionToken) return false;
+      if (!gasConfigured()) throw new Error('Apps Script URL is not configured.');
+      if (!gasSessionToken) throw new Error('এডমিন সেশন শেষ হয়েছে। আবার লগইন করুন।');
       const safeData = JSON.parse(JSON.stringify(data));
       delete safeData.adminPasscode;
-      const payload = JSON.stringify({action:'save', token:gasSessionToken, expectedRevision:gasRevision, data:safeData});
-      await fetch(GAS_API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload, keepalive:true });
-      // POST is opaque because Apps Script does not provide arbitrary CORS headers.
-      // Verify the new revision with a normal JSONP GET.
-      for (let i=0;i<4;i++) {
-        await new Promise(r=>setTimeout(r, 350 + i*250));
+      const expectedRevision = gasRevision;
+      const expectedSnapshot = gasStableStringify(safeData);
+      const payload = JSON.stringify({action:'save', token:gasSessionToken, expectedRevision, data:safeData});
+
+      // Apps Script POST response is opaque in no-cors mode, so verify the
+      // actual cloud contents instead of treating a completed fetch as success.
+      // Do not use keepalive here: browsers cap keepalive request bodies at about 64 KB.
+      // A full-month meal matrix can exceed that size even though a single-day save works.
+      await fetch(GAS_API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload });
+      for (let i=0;i<12;i++) {
+        await new Promise(r=>setTimeout(r, 500 + Math.min(i, 5) * 250));
         const st = await gasStatus();
-        if (Number(st.revision) > gasRevision) {
-          gasRevision = Number(st.revision);
-          sessionStorage.setItem('MESS_GAS_REVISION', String(gasRevision));
-          return true;
+        const remoteRevision = Number(st.revision || 0);
+        if (remoteRevision > expectedRevision) {
+          const remoteData = await gasLoadData();
+          if (gasStableStringify(remoteData) === expectedSnapshot) {
+            gasRevision = remoteRevision;
+            sessionStorage.setItem('MESS_GAS_REVISION', String(gasRevision));
+            return true;
+          }
+          throw new Error('Cloud conflict: অন্য পরিবর্তন আগে সেভ হয়েছে। Cloud data না বদলে পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
         }
-        if (Number(st.revision) < gasRevision) throw new Error('Cloud revision moved backward.');
+        if (remoteRevision < expectedRevision) throw new Error('Cloud revision পিছিয়ে গেছে। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
       }
-      throw new Error('Save verification timed out.');
+      throw new Error('Cloud save নিশ্চিত করা যায়নি। ইন্টারনেট ও Apps Script deployment পরীক্ষা করে আবার চেষ্টা করুন।');
     }
 
     window.gasSyncOnLoad = async function() {
@@ -1727,14 +1778,26 @@
       const newPin = document.getElementById('new-passcode-input').value.trim();
       if (!/^\d{4,12}$/.test(newPin)) { showToast('4–12 ডিজিটের পাসকোড দিন', true); return; }
       try {
-        if (gasConfigured() && gasSessionToken) {
-          await fetch(GAS_API_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'changePin', token:gasSessionToken, newPin})});
-          await new Promise(r=>setTimeout(r,500));
-          showToast('নতুন এডমিন পাসকোড আপডেট করা হয়েছে।');
-        } else {
-          showToast('Apps Script সংযুক্ত না থাকলে PIN পরিবর্তন করা যাবে না', true);
+        if (!gasConfigured() || !gasSessionToken) throw new Error('Apps Script সংযুক্ত নেই অথবা এডমিন সেশন শেষ হয়েছে।');
+        await fetch(GAS_API_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'changePin', token:gasSessionToken, newPin})});
+        // Verify the PIN by requesting a fresh login token. Do not show success
+        // merely because the opaque no-cors POST promise resolved.
+        let verified = false;
+        let lastError = null;
+        for (let i=0;i<8;i++) {
+          await new Promise(r=>setTimeout(r, 500));
+          try {
+            await gasLogin(newPin);
+            verified = true;
+            break;
+          } catch (e) { lastError = e; }
         }
-      } catch(e) { showToast('PIN update failed', true); }
+        if (!verified) throw new Error(lastError && lastError.message ? lastError.message : 'নতুন PIN যাচাই করা যায়নি।');
+        showToast('নতুন এডমিন পাসকোড যাচাইসহ আপডেট হয়েছে।');
+      } catch(e) {
+        console.error('PIN update failed:', e);
+        showToast(e.message || 'PIN update failed', true);
+      }
       document.getElementById('new-passcode-input').value = '';
     }
 
@@ -2316,7 +2379,7 @@
           <td class="p-2 border border-slate-300 text-center font-bold">${mMeals}</td>
           <td class="p-2 border border-slate-300 text-right">৳${mMealCost.toFixed(1)}</td>
           <td class="p-2 border border-slate-300 text-right">৳${mExtra}</td>
-          <td class="p-2 border border-slate-300 text-right">৳${adj}</td>
+          <td class="p-2 border border-slate-300 text-right font-semibold">৳${(mMealCost + mExtra).toFixed(1)}</td>
           <td class="p-2 border border-slate-300 text-right">৳${mDeposit}</td>
           <td class="p-2 border border-slate-300 text-center font-bold">${finalNet >= 0 ? '<span class="text-emerald-700">৳' + finalNet.toFixed(1) + ' জমা আছে</span>' : '<span class="text-rose-700">৳' + Math.abs(finalNet).toFixed(1) + ' বকেয়া আছে</span>'}</td>
         `;
@@ -2495,7 +2558,7 @@
       renderMonthlyMealChart();
     }
 
-    function saveMonthlyMealChartEdit() {
+    async function saveMonthlyMealChartEdit() {
       const mData = getCurrentMonthData();
       const inputs = document.querySelectorAll('#monthly-chart-tbody input[data-monthly-edit="1"]');
       inputs.forEach(input => {
@@ -2507,7 +2570,9 @@
         const total = Number.isFinite(value) && value >= 0 ? value : 0;
         mData.meals[dateKey][memberId] = { ...current, total };
       });
+      // Save locally first, then explicitly wait for cloud confirmation.
       persistData();
+      if (typeof gasSaveTimer !== 'undefined' && gasSaveTimer) clearTimeout(gasSaveTimer);
       monthlyMealChartEditMode = false;
       monthlyMealChartDraft = null;
       const btn = document.getElementById('monthly-chart-edit-btn');
@@ -2515,7 +2580,13 @@
       if (btn) btn.classList.remove('hidden');
       if (actions) actions.classList.add('hidden');
       renderMonthlyMealChart();
-      showToast('পুরো মাসের মিল চার্ট সফলভাবে সেভ হয়েছে');
+      if (window.isAdmin && window.syncToCloud) {
+        const saved = await window.syncToCloud();
+        if (saved) showToast('পুরো মাসের মিল চার্ট Cloud-এ সেভ হয়েছে');
+        // On failure, syncToCloud already displays the actual error.
+      } else {
+        showToast('পুরো মাসের মিল চার্ট লোকাল ডিভাইসে সেভ হয়েছে');
+      }
     }
 
     function loadMealEntryForDate() {
