@@ -58,7 +58,6 @@
       font-feature-settings: 'kern' 1, 'liga' 1;
       line-height: 1.65;
     }
-    /* Entire UI uses Hind Siliguri. Numeric values remain Latin/English digits. */
     .numeric-display,
     .numeric-display *,
     input[type="number"],
@@ -176,12 +175,11 @@
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-    /* Blank meal-sheet print controls */
     .meal-sheet-print-options { background: linear-gradient(180deg,#f8fafc,#ffffff); }
     .meal-sheet-member-list { max-height: none; overflow: visible; }
     .meal-sheet-member-list label { min-height: 38px; border:1px solid transparent; }
     .meal-sheet-member-list label:hover { background:#f8fafc; border-color:#e2e8f0; }
-        @media (max-width: 640px) {
+    @media (max-width: 640px) {
       #view-members > .members-settings-layout { display:block !important; }
       #view-members .members-main-stack { display:block !important; }
       #view-members .members-side-stack { margin-top:14px; }
@@ -200,15 +198,8 @@
       body.meal-sheet-printing #blank-meal-sheet-print * { visibility:visible !important; }
       .blank-meal-sheet-page { color:#000; font-family:var(--ui-font); }
       .blank-meal-sheet-table { width:100%; border-collapse:collapse; table-layout:fixed; }
-      .blank-meal-sheet-table th,.blank-meal-sheet-table td { border:.3mm solid #555; text-align:center; vertical-align:middle; height:7.5mm; padding:1mm .8mm; font-size:8pt; }
-      .blank-meal-sheet-table { width:100%; border-collapse:collapse; table-layout:fixed; }
-      .blank-meal-sheet-table .sheet-name-col { width:36mm; }
-      .blank-meal-sheet-table .sheet-day-col { width:auto; }
-      .blank-meal-sheet-table .sheet-total-col { width:14mm; }
       .blank-meal-sheet-table th,.blank-meal-sheet-table td { border:.3mm solid #555; text-align:center; vertical-align:middle; height:6.8mm; padding:.65mm .2mm; font-size:6.5pt; line-height:1.05; }
       .blank-meal-sheet-table th { background:#f1f5f9; font-weight:700; }
-      .blank-meal-sheet-table .blank-input-cell { font-size:8pt; font-weight:700; }
-      .blank-meal-sheet-table .blank-total-cell { font-size:8pt; font-weight:700; }
       .blank-meal-sheet-table .sheet-member-name { font-weight:700; text-align:left; padding-left:1.5mm; white-space:normal; }
       .blank-meal-sheet-table .sheet-designation { font-size:5.2pt; color:#555; }
       body.meal-sheet-a4 .blank-meal-sheet-page { page:blank-meal-a4; }
@@ -217,12 +208,10 @@
     @page blank-meal-a4 { size:A4 landscape; margin:8mm; }
     @page blank-meal-legal { size:legal landscape; margin:8mm; }
 
-    /* Professional print system: final settlement + separate A4 landscape meal chart */
     @page final-summary-a4 { size: A4 landscape; margin: 8mm; }
     @page final-summary-legal { size: legal landscape; margin: 8mm; }
     @page monthly-meal-a4 { size: A4 landscape; margin: 6mm; }
     @page monthly-meal-legal { size: legal landscape; margin: 6mm; }
-    /* Keep the printable-only report completely out of every normal tab/screen. */
     #printable-report-area {
       display: none !important;
     }
@@ -262,7 +251,6 @@
       body.final-print-legal .monthly-meal-print-page { page: monthly-meal-legal; }
     }
 
-    /* Screen-safe preview styling for the hidden printable report */
     .print-meal-matrix {
       table-layout: fixed;
       width: 100%;
@@ -294,7 +282,6 @@
       background: #f8fafc;
       font-weight: 700;
     }
-    /* Compact final-report heading: keep the title block within roughly 0.5–0.7 inch */
     .final-summary-print-page .print-final-heading {
       display: flex;
       flex-direction: column;
@@ -364,8 +351,6 @@
       }
     }
   
-    /* Monthly meal chart: keep date headings and teacher/member names visible
-       while scrolling vertically and horizontally inside the chart. */
     .monthly-chart-scroll {
       max-height: min(70vh, 720px);
       overflow: auto;
@@ -395,7 +380,7 @@
     .monthly-chart-scroll tbody tr:last-child td:first-child {
       background: #f1f5f9;
     }
-</style>
+  </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col pb-10">
 
@@ -611,11 +596,16 @@
             <tbody id="dash-member-summary-tbody" class="divide-y divide-slate-100 text-sm numeric-display">
               <!-- Dynamically Populated -->
             </tbody>
+            <tfoot class="bg-slate-50 font-bold border-t border-slate-200 text-slate-800">
+              <tr id="dash-member-summary-tfoot" class="numeric-display">
+                <!-- Dynamically Populated Grand Totals -->
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
 
-      <!-- Daily Meal Visual Chart Card: intentionally kept at the bottom of Dashboard -->
+      <!-- Daily Meal Visual Chart Card -->
       <div class="dash-chart-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
         <div class="flex items-center justify-between mb-4">
           <div>
@@ -630,8 +620,7 @@
         </div>
       </div>
 
-
-      <!-- Selected Month Meal Matrix (screen/dashboard only) -->
+      <!-- Selected Month Meal Matrix -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -695,7 +684,11 @@
           </h2>
           <p class="text-xs text-slate-500 mt-1">মাসিক মিল, এক্সট্রা বিল ও সমন্বয় পরবর্তী হিসাব এবং PDF প্রিন্ট করার অপশন</p>
         </div>
-        <div class="flex flex-wrap items-center gap-2.5">
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl">
+            <input type="checkbox" id="print-filter-active-only" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+            <span>শুধুমাত্র যাদের বিল/ডেটা আছে তাদের প্রিন্ট করুন</span>
+          </label>
           <select id="final-print-paper" class="border border-slate-300 rounded-xl px-3 py-2.5 text-sm bg-white font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
             <option value="a4">A4 — Landscape</option>
             <option value="legal">Legal — Landscape</option>
@@ -894,6 +887,7 @@
           </div>
 
           <form id="extrabill-form" onsubmit="handleExtraBillSubmit(event)" class="space-y-4">
+            <input type="hidden" id="extrabill-edit-id">
             <div>
               <label class="block text-xs font-bold text-slate-600 uppercase mb-1">তারিখ</label>
               <input type="date" id="extrabill-date" required class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
@@ -916,19 +910,29 @@
               <input type="number" id="extrabill-amount" min="1" step="any" placeholder="যেমন: 200" required class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
             </div>
 
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-plus"></i> এক্সট্রা বিল যোগ করুন
-            </button>
+            <div class="flex items-center gap-2">
+              <button type="submit" id="extrabill-submit-btn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-plus"></i> এক্সট্রা বিল যোগ করুন
+              </button>
+              <button type="button" id="extrabill-cancel-btn" onclick="cancelExtraBillEdit()" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition">
+                বাতিল
+              </button>
+            </div>
           </form>
         </div>
 
         <!-- Extra Bills History Table -->
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <i class="fa-solid fa-file-invoice text-slate-600"></i> মেম্বারদের এক্সট্রা বিলের তালিকা
-            </h2>
-            <span class="text-xs text-slate-500">মোট এন্ট্রি: <span id="extrabill-count-badge">0</span>টি</span>
+          <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-slate-50">
+            <div>
+              <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-file-invoice text-slate-600"></i> মেম্বারদের এক্সট্রা বিলের তালিকা
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">মোট এন্ট্রি: <span id="extrabill-count-badge">0</span>টি</p>
+            </div>
+            <div class="text-xs font-bold bg-indigo-50 text-indigo-700 px-3.5 py-2 rounded-xl border border-indigo-200 shadow-xs">
+              সর্বমোট এক্সট্রা বিল: ৳<span id="extrabill-total-display">0</span>
+            </div>
           </div>
 
           <div class="overflow-x-auto">
@@ -962,6 +966,7 @@
             <i class="fa-solid fa-money-bill-wave text-emerald-500"></i> মেস ফান্ডের টাকা জমা
           </h2>
           <form id="deposit-form" onsubmit="handleDepositSubmit(event)" class="space-y-4">
+            <input type="hidden" id="deposit-edit-id">
             <div>
               <label class="block text-xs font-bold text-slate-600 uppercase mb-1">তারিখ</label>
               <input type="date" id="deposit-date" required class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
@@ -984,18 +989,28 @@
               <input type="text" id="deposit-note" placeholder="যেমন: বিকাশ / ক্যাশ প্রদান" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
             </div>
 
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-hand-holding-dollar"></i> জমা রেকর্ড করুন
-            </button>
+            <div class="flex items-center gap-2">
+              <button type="submit" id="deposit-submit-btn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-hand-holding-dollar"></i> জমা রেকর্ড করুন
+              </button>
+              <button type="button" id="deposit-cancel-btn" onclick="cancelDepositEdit()" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition">
+                বাতিল
+              </button>
+            </div>
           </form>
         </div>
 
         <!-- Deposits History Table -->
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="px-6 py-4 border-b border-slate-100">
-            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <i class="fa-solid fa-receipt text-slate-600"></i> সকল জমার হিস্টোরি
-            </h2>
+          <div class="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3 bg-slate-50">
+            <div>
+              <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-receipt text-slate-600"></i> সকল জমার হিস্টোরি
+              </h2>
+            </div>
+            <div class="text-xs font-bold bg-emerald-50 text-emerald-700 px-3.5 py-2 rounded-xl border border-emerald-200 shadow-xs">
+              সর্বমোট জমা: ৳<span id="deposit-total-display">0</span>
+            </div>
           </div>
 
           <div class="overflow-x-auto">
@@ -1231,8 +1246,6 @@
 
   </main>
 
-
-
   <!-- BLANK MEAL SHEET PRINT AREA -->
   <div id="blank-meal-sheet-print" class="hidden">
     <div class="blank-meal-sheet-page">
@@ -1409,7 +1422,6 @@
 
   <!-- Google Apps Script API bridge -->
   <script>
-    // IMPORTANT: after deploying Apps Script, paste the /exec URL here.
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyKceDzyHEZsIrXiEeCmuJX7gLGKkEWJLc83C5MMUt653UfH-nfwVsqQTQhtSla2hV5/exec';
     let gasSessionToken = sessionStorage.getItem('MESS_GAS_SESSION') || '';
     let gasReady = false;
@@ -1477,10 +1489,6 @@
       const expectedSnapshot = gasStableStringify(safeData);
       const payload = JSON.stringify({action:'save', token:gasSessionToken, expectedRevision, data:safeData});
 
-      // Apps Script POST response is opaque in no-cors mode, so verify the
-      // actual cloud contents instead of treating a completed fetch as success.
-      // Do not use keepalive here: browsers cap keepalive request bodies at about 64 KB.
-      // A full-month meal matrix can exceed that size even though a single-day save works.
       await fetch(GAS_API_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload });
       for (let i=0;i<12;i++) {
         await new Promise(r=>setTimeout(r, 500 + Math.min(i, 5) * 250));
@@ -1563,13 +1571,12 @@
   <script>
     const LOCAL_STORAGE_KEY = 'MESS_MANAGER_DATA_V3';
 
-    // Application State
     window.isAdmin = false;
     window.targetPendingTab = null;
     window.dashChartInstance = null;
 
     window.appData = {
-      adminPasscode: '', // PIN is verified by Apps Script when API mode is enabled
+      adminPasscode: '',
       activeMonth: '2026-09',
       managerName: 'আফিসার্স মেস ম্যানেজার',
       managerPhone: '01712345678',
@@ -1608,16 +1615,13 @@
           ],
           adjustments: {
             'm1': 0,
-            'm2': -200, // Due 200 from previous month
-            'm3': 150   // 150 advance from previous month
+            'm2': -200,
+            'm3': 150
           }
         }
       }
     };
 
-    // Helper functions
-    // Numeric display: keep the app language Bengali, but render all calculated
-    // meal/money figures with English (Latin) digits for cleaner mobile display.
     function toBnNum(num, dec = 0) {
       if (num === null || num === undefined || isNaN(num)) return '0';
       return Number(num).toFixed(dec);
@@ -1646,7 +1650,6 @@
       }, 3000);
     }
 
-    // Application Initialization
     window.onload = function() {
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('meal-date-picker').value = today;
@@ -1710,7 +1713,6 @@
       return window.appData.monthData[monthKey];
     }
 
-    // Admin Auth Logic
     function toggleAdminAuth() {
       if (window.isAdmin) {
         window.isAdmin = false;
@@ -1780,8 +1782,6 @@
       try {
         if (!gasConfigured() || !gasSessionToken) throw new Error('Apps Script সংযুক্ত নেই অথবা এডমিন সেশন শেষ হয়েছে।');
         await fetch(GAS_API_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action:'changePin', token:gasSessionToken, newPin})});
-        // Verify the PIN by requesting a fresh login token. Do not show success
-        // merely because the opaque no-cors POST promise resolved.
         let verified = false;
         let lastError = null;
         for (let i=0;i<8;i++) {
@@ -1806,7 +1806,6 @@
       const authBtnText = document.getElementById('admin-auth-text');
       const authBtnIcon = document.getElementById('admin-auth-icon');
       const lockIcons = document.querySelectorAll('.admin-lock-icon');
-      const addMonthBtn = document.getElementById('btn-add-month');
 
       if (window.isAdmin) {
         if (badge) {
@@ -1816,7 +1815,6 @@
         if (authBtnText) authBtnText.innerText = "লগআউট";
         if (authBtnIcon) authBtnIcon.className = "fa-solid fa-unlock";
         lockIcons.forEach(el => el.classList.add('hidden'));
-        if (addMonthBtn) addMonthBtn.classList.remove('hidden');
       } else {
         if (badge) {
           badge.innerText = "পাবলিক ভিউ";
@@ -1825,7 +1823,6 @@
         if (authBtnText) authBtnText.innerText = "এডমিন লগইন";
         if (authBtnIcon) authBtnIcon.className = "fa-solid fa-lock";
         lockIcons.forEach(el => el.classList.remove('hidden'));
-        if (addMonthBtn) addMonthBtn.classList.add('hidden');
       }
     }
 
@@ -1857,7 +1854,6 @@
       } catch(e) { showToast(e.message || 'Audit unavailable', true); }
     }
 
-    // Navigation and Tabs Switching
     function switchTab(tabName) {
       const protectedTabs = ['summary', 'meals', 'bazaar', 'extrabills', 'deposits', 'members'];
       if (protectedTabs.includes(tabName) && !window.isAdmin) {
@@ -1881,7 +1877,6 @@
       }
     }
 
-    // Month Selector Logic
     function formatMonthLabel(monthKey) {
       if (!/^\d{4}-\d{2}$/.test(monthKey || '')) return monthKey || '';
       const [y, m] = monthKey.split('-').map(Number);
@@ -1920,10 +1915,6 @@
       populateMonthSelector();
       persistData();
       showToast(`${formatMonthLabel(val)} এর হিসাব লোড হয়েছে`);
-    }
-
-    function createNewMonthPrompt() {
-      openMonthPicker();
     }
 
     function syncMealDateToActiveMonth() {
@@ -1971,9 +1962,6 @@
       showToast(window.appData.publicNotice ? 'পাবলিক নোটিশ আপডেট হয়েছে' : 'পাবলিক নোটিশ সরানো হয়েছে');
     }
 
-    // Meal total helper: scanned matrix entries may store a direct total without
-    // changing the existing breakfast/lunch/dinner data model. Legacy entries
-    // continue to work exactly as before.
     function getEntryMealTotal(entry) {
       if (!entry) return 0;
       if (entry.total !== undefined && entry.total !== null && Number.isFinite(Number(entry.total))) {
@@ -1982,12 +1970,10 @@
       return (Number(entry.bf) || 0) + (Number(entry.ln) || 0) + (Number(entry.dn) || 0);
     }
 
-    // Render Logic for All Views
     function renderAllViews() {
       const mData = getCurrentMonthData();
       renderPublicNotice();
       
-      // Update Month Title Badges
       const mealMonthLabel = document.getElementById('meal-entry-month-label');
       if (mealMonthLabel) mealMonthLabel.innerText = formatMonthLabel(window.appData.activeMonth);
 
@@ -1997,7 +1983,6 @@
       const pTitle = document.getElementById('print-month-title');
       if (pTitle) pTitle.innerText = `মাস: ${formatMonthLabel(window.appData.activeMonth)}`;
 
-      // Calculate Total Meals
       let totalMeals = 0;
       const memberMealsMap = {};
       getSortedMembers().forEach(m => memberMealsMap[m.id] = 0);
@@ -2014,25 +1999,17 @@
         });
       });
 
-      // Calculate Total Bazaar Expense
       const totalBazaar = (mData.bazaar || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-
-      // Calculate Meal Rate
       const mealRate = totalMeals > 0 ? (totalBazaar / totalMeals) : 0;
-
-      // Calculate Total Deposits
       const totalDeposits = (mData.deposits || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-
-      // Calculate Cash Balance
+      const totalExtraBills = (mData.extraBills || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const cashBalance = totalDeposits - totalBazaar;
 
-      // Update Dashboard Header Cards
       document.getElementById('dash-total-meals').innerText = toBnNum(totalMeals, 0);
       document.getElementById('dash-total-bazaar').innerText = toBnNum(totalBazaar, 0);
       document.getElementById('dash-meal-rate').innerText = mealRate.toFixed(2);
       document.getElementById('dash-cash-balance').innerText = toBnNum(cashBalance, 0);
 
-      // Extra Bills Map
       const memberExtraBillsMap = {};
       getSortedMembers().forEach(m => memberExtraBillsMap[m.id] = 0);
       (mData.extraBills || []).forEach(ex => {
@@ -2041,14 +2018,16 @@
         }
       });
 
-      // Populate Live Dashboard Table
       const summaryTbody = document.getElementById('dash-member-summary-tbody');
+      const summaryTfoot = document.getElementById('dash-member-summary-tfoot');
       summaryTbody.innerHTML = '';
 
       let highestMealCount = -1;
       let highestMemberName = '-';
       let lowestMealCount = Infinity;
       let lowestMemberName = '-';
+
+      let sumMeals = 0, sumMealCost = 0, sumExtraBill = 0, sumTotalCost = 0, sumDeposit = 0;
 
       getSortedMembers().forEach(member => {
         const mMeals = memberMealsMap[member.id] || 0;
@@ -2069,6 +2048,12 @@
         const adj = (mData.adjustments && mData.adjustments[member.id]) || 0;
         const netBalance = mDeposit - mTotalCost + adj;
 
+        sumMeals += mMeals;
+        sumMealCost += mMealCost;
+        sumExtraBill += mExtraBill;
+        sumTotalCost += mTotalCost;
+        sumDeposit += mDeposit;
+
         let statusBadge = netBalance >= 0 ? 
           `<span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-md font-bold inline-block min-w-[100px]">৳${toBnNum(netBalance, 1)} জমা আছে</span>` : 
           `<span class="bg-rose-100 text-rose-800 text-xs px-2.5 py-1 rounded-md font-bold inline-block min-w-[100px]">৳${toBnNum(Math.abs(netBalance), 1)} বকেয়া আছে</span>`;
@@ -2087,10 +2072,20 @@
         summaryTbody.appendChild(tr);
       });
 
-      // Update Meal Analytics Card Details
+      if (summaryTfoot) {
+        summaryTfoot.innerHTML = `
+          <td class="py-3 px-4 text-left font-bold text-slate-800">সর্বমোট (সকল সদস্য)</td>
+          <td class="py-3 px-4 text-center font-bold text-slate-800">${toBnNum(sumMeals, 0)} টি</td>
+          <td class="py-3 px-4 text-right font-bold text-slate-800">৳${toBnNum(sumMealCost, 1)}</td>
+          <td class="py-3 px-4 text-right font-bold text-indigo-700">৳${toBnNum(sumExtraBill, 0)}</td>
+          <td class="py-3 px-4 text-right font-bold text-slate-800">৳${toBnNum(sumTotalCost, 1)}</td>
+          <td class="py-3 px-4 text-right font-bold text-emerald-700">৳${toBnNum(sumDeposit, 0)}</td>
+          <td class="py-3 px-4 text-center text-xs text-slate-500 font-normal">ক্যাশ: ৳${toBnNum(cashBalance, 1)}</td>
+        `;
+      }
+
       document.getElementById('dash-highest-member').innerText = highestMemberName;
       document.getElementById('dash-highest-count').innerText = `${highestMealCount >= 0 ? highestMealCount : 0} টি মিল`;
-      
       document.getElementById('dash-lowest-member').innerText = lowestMealCount !== Infinity ? lowestMemberName : '-';
       document.getElementById('dash-lowest-count').innerText = `${lowestMealCount !== Infinity ? lowestMealCount : 0} টি মিল`;
 
@@ -2100,7 +2095,6 @@
       const avgDailyMeals = totalMeals > 0 ? (totalMeals / daysInMonth) : 0;
       document.getElementById('dash-avg-daily-meals').innerText = `${toBnNum(avgDailyMeals, 1)} টি`;
 
-      // Update Manager Info & WhatsApp Link Card
       const mgrName = window.appData.managerName || 'আফিসার্স মেস ম্যানেজার';
       const mgrPhone = window.appData.managerPhone || '01700000000';
       const waLink = window.appData.whatsappLink || 'https://chat.whatsapp.com';
@@ -2115,7 +2109,6 @@
       const waBtn = document.getElementById('dash-whatsapp-btn');
       waBtn.href = waLink;
 
-      // Populate Manager Settings Form Controls
       const sName = document.getElementById('setting-manager-name');
       const sPhone = document.getElementById('setting-manager-phone');
       const sLink = document.getElementById('setting-whatsapp-link');
@@ -2308,7 +2301,6 @@
 
       document.getElementById('summary-meal-rate-badge').innerText = mealRate.toFixed(2);
 
-      // Render adjustment controls
       const adjContainer = document.getElementById('adjustment-controls-container');
       adjContainer.innerHTML = '';
 
@@ -2326,7 +2318,6 @@
         adjContainer.appendChild(div);
       });
 
-      // Render Final Summary Table & Print Table
       const finalTbody = document.getElementById('final-summary-tbody');
       const printTbody = document.getElementById('print-summary-tbody');
       finalTbody.innerHTML = '';
@@ -2355,7 +2346,6 @@
           `<span class="text-emerald-600 font-bold">৳${finalNet.toFixed(1)} জমা আছে</span>` : 
           `<span class="text-rose-600 font-bold">৳${Math.abs(finalNet).toFixed(1)} বকেয়া আছে</span>`;
 
-        // Screen Table Row
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50 transition";
         tr.innerHTML = `
@@ -2370,23 +2360,26 @@
         `;
         finalTbody.appendChild(tr);
 
-        // Printable PDF Table Row
+        // Check if member has zero total transaction values
+        const hasZeroData = (mMeals === 0 && mMealCost === 0 && mExtra === 0 && mDeposit === 0);
+
         const printTr = document.createElement('tr');
-        printTr.className = "border-b border-slate-300";
+        printTr.className = "border-b border-slate-300" + (hasZeroData ? " print-row-zero" : "");
+        printTr.dataset.hasData = hasZeroData ? "false" : "true";
+
         printTr.innerHTML = `
           <td class="p-2 border border-slate-300 text-center font-medium">${(Number.isInteger(Number(member.seniority)) && Number(member.seniority) > 0) ? Number(member.seniority) : (idx + 1)}</td>
           <td class="p-2 border border-slate-300 text-left font-bold text-slate-800">${member.name}</td>
-          <td class="p-2 border border-slate-300 text-center font-bold">${mMeals}</td>
-          <td class="p-2 border border-slate-300 text-right">৳${mMealCost.toFixed(1)}</td>
-          <td class="p-2 border border-slate-300 text-right">৳${mExtra}</td>
-          <td class="p-2 border border-slate-300 text-right font-semibold">৳${(mMealCost + mExtra).toFixed(1)}</td>
-          <td class="p-2 border border-slate-300 text-right">৳${mDeposit}</td>
-          <td class="p-2 border border-slate-300 text-center font-bold">${finalNet >= 0 ? '<span class="text-emerald-700">৳' + finalNet.toFixed(1) + ' জমা আছে</span>' : '<span class="text-rose-700">৳' + Math.abs(finalNet).toFixed(1) + ' বকেয়া আছে</span>'}</td>
+          <td class="p-2 border border-slate-300 text-center ${mMeals > 0 ? 'font-bold' : ''}">${mMeals > 0 ? mMeals : ''}</td>
+          <td class="p-2 border border-slate-300 text-right ${mMealCost > 0 ? 'font-bold' : ''}">${mMealCost > 0 ? '৳' + mMealCost.toFixed(1) : ''}</td>
+          <td class="p-2 border border-slate-300 text-right ${mExtra > 0 ? 'font-bold' : ''}">${mExtra > 0 ? '৳' + mExtra : ''}</td>
+          <td class="p-2 border border-slate-300 text-right ${ (mMealCost + mExtra) > 0 ? 'font-bold' : ''}">${ (mMealCost + mExtra) > 0 ? '৳' + (mMealCost + mExtra).toFixed(1) : ''}</td>
+          <td class="p-2 border border-slate-300 text-right ${mDeposit > 0 ? 'font-bold' : ''}">${mDeposit > 0 ? '৳' + mDeposit : ''}</td>
+          <td class="p-2 border border-slate-300 text-center font-bold">${finalNet === 0 ? '' : (finalNet > 0 ? '<span class="text-emerald-700 font-bold">৳' + finalNet.toFixed(1) + ' জমা আছে</span>' : '<span class="text-rose-700 font-bold">৳' + Math.abs(finalNet).toFixed(1) + ' বকেয়া আছে</span>')}</td>
         `;
         printTbody.appendChild(printTr);
       });
 
-      // Render Footer Totals
       document.getElementById('final-summary-tfoot').innerHTML = `
         <td class="py-3 px-4 text-left font-bold">সর্বমোট</td>
         <td class="py-3 px-4 text-center font-bold">${sumMeals}</td>
@@ -2398,7 +2391,6 @@
         <td class="py-3 px-4 text-center text-xs text-slate-500 font-normal">ক্যাশ ব্যালেন্স: ৳${(sumDeposit - totalBazaar).toFixed(1)}</td>
       `;
 
-      // Update printable header metrics
       document.getElementById('print-total-bazaar').innerText = totalBazaar.toLocaleString('en-US');
       document.getElementById('print-total-meals').innerText = totalMeals;
       document.getElementById('print-meal-rate').innerText = mealRate.toFixed(2);
@@ -2440,7 +2432,6 @@
       const dayLabels = Array.from({length: numDays}, (_, i) => String(i + 1).padStart(2, '0'));
       const members = getSortedMembers();
 
-      // SCREEN: members are rows; dates are columns; final column is member total.
       let headerHTML = `<th class="p-2 border text-left font-bold sticky left-0 bg-slate-100 z-10">মেস মেম্বারের নাম</th>`;
       dayLabels.forEach(day => {
         headerHTML += `<th class="p-2 border text-center font-bold min-w-[42px]">${day}</th>`;
@@ -2469,7 +2460,6 @@
         chartBody.appendChild(tr);
       });
 
-      // Bottom total row: total meals for each date and grand total.
       let grandTotal = 0;
       let footerHTML = `<td class="p-2 border text-left font-bold bg-slate-100 sticky left-0 z-10">সর্বমোট</td>`;
       dayLabels.forEach(day => {
@@ -2484,7 +2474,6 @@
       footerRow.innerHTML = footerHTML;
       chartBody.appendChild(footerRow);
 
-      // PRINT: members are rows, dates horizontally, final column is member total.
       if (printColgroup && printHeader && printBody && printFooter) {
         const nameCol = document.createElement('col');
         nameCol.className = 'meal-name-col';
@@ -2570,7 +2559,6 @@
         const total = Number.isFinite(value) && value >= 0 ? value : 0;
         mData.meals[dateKey][memberId] = { ...current, total };
       });
-      // Save locally first, then explicitly wait for cloud confirmation.
       persistData();
       if (typeof gasSaveTimer !== 'undefined' && gasSaveTimer) clearTimeout(gasSaveTimer);
       monthlyMealChartEditMode = false;
@@ -2583,7 +2571,6 @@
       if (window.isAdmin && window.syncToCloud) {
         const saved = await window.syncToCloud();
         if (saved) showToast('পুরো মাসের মিল চার্ট Cloud-এ সেভ হয়েছে');
-        // On failure, syncToCloud already displays the actual error.
       } else {
         showToast('পুরো মাসের মিল চার্ট লোকাল ডিভাইসে সেভ হয়েছে');
       }
@@ -2689,7 +2676,6 @@
       showToast("আজকের সকল মেম্বারের মিল ডাটাব্যাজে সেভ হয়েছে!");
     }
 
-    /* BAZAAR ACTIONS */
     function handleBazaarSubmit(event) {
       event.preventDefault();
       const date = document.getElementById('bazaar-date').value;
@@ -2749,9 +2735,10 @@
       showToast("বাজার খরচের আইটেম মোছা হয়েছে");
     }
 
-    /* EXTRA BILLS ACTIONS */
+    /* EXTRA BILLS ACTIONS WITH EDIT SUPPORT */
     function handleExtraBillSubmit(event) {
       event.preventDefault();
+      const editId = document.getElementById('extrabill-edit-id').value;
       const date = document.getElementById('extrabill-date').value;
       const memberId = document.getElementById('extrabill-member').value;
       const desc = document.getElementById('extrabill-desc').value.trim();
@@ -2763,12 +2750,50 @@
       }
 
       const mData = getCurrentMonthData();
-      mData.extraBills.unshift({ id: 'ex_' + Date.now(), date, memberId, desc, amount });
+      if (editId) {
+        const item = mData.extraBills.find(x => x.id === editId);
+        if (item) {
+          item.date = date;
+          item.memberId = memberId;
+          item.desc = desc;
+          item.amount = amount;
+        }
+        showToast("এক্সট্রা বিল সফলভাবে আপডেট করা হয়েছে!");
+        cancelExtraBillEdit();
+      } else {
+        mData.extraBills.unshift({ id: 'ex_' + Date.now(), date, memberId, desc, amount });
+        showToast("মেম্বারের এক্সট্রা বিল সফলভাবে যুক্ত করা হয়েছে!");
+        document.getElementById('extrabill-desc').value = '';
+        document.getElementById('extrabill-amount').value = '';
+      }
 
       persistData();
+    }
+
+    function editExtraBillItem(id) {
+      const mData = getCurrentMonthData();
+      const item = mData.extraBills.find(x => x.id === id);
+      if (!item) return;
+
+      document.getElementById('extrabill-edit-id').value = item.id;
+      document.getElementById('extrabill-date').value = item.date;
+      document.getElementById('extrabill-member').value = item.memberId;
+      document.getElementById('extrabill-desc').value = item.desc;
+      document.getElementById('extrabill-amount').value = item.amount;
+
+      document.getElementById('extrabill-submit-btn').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> এক্সট্রা বিল আপডেট করুন';
+      document.getElementById('extrabill-cancel-btn').classList.remove('hidden');
+      document.getElementById('extrabill-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelExtraBillEdit() {
+      document.getElementById('extrabill-edit-id').value = '';
       document.getElementById('extrabill-desc').value = '';
       document.getElementById('extrabill-amount').value = '';
-      showToast("মেম্বারের এক্সট্রা বিল সফলভাবে যুক্ত করা হয়েছে!");
+      document.getElementById('extrabill-submit-btn').innerHTML = '<i class="fa-solid fa-plus"></i> এক্সট্রা বিল যোগ করুন';
+      document.getElementById('extrabill-cancel-btn').classList.add('hidden');
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('extrabill-date').value = today;
     }
 
     function renderExtraBillsHistory() {
@@ -2776,14 +2801,17 @@
       const tbody = document.getElementById('extrabill-history-tbody');
       tbody.innerHTML = '';
 
-      document.getElementById('extrabill-count-badge').innerText = (mData.extraBills || []).length;
+      const list = mData.extraBills || [];
+      document.getElementById('extrabill-count-badge').innerText = list.length;
+      const totalEx = list.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      document.getElementById('extrabill-total-display').innerText = totalEx.toLocaleString('en-US');
 
-      if (!mData.extraBills || mData.extraBills.length === 0) {
+      if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-400">কোন এক্সট্রা বিল নেই</td></tr>`;
         return;
       }
 
-      mData.extraBills.forEach(item => {
+      list.forEach(item => {
         const member = window.appData.members.find(m => m.id === item.memberId) || { name: 'অজানা' };
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50";
@@ -2792,8 +2820,11 @@
           <td class="py-3 px-4 font-semibold text-slate-800">${member.name}</td>
           <td class="py-3 px-4 text-slate-600">${item.desc}</td>
           <td class="py-3 px-4 text-right font-bold text-indigo-600">৳${item.amount.toLocaleString('en-US')}</td>
-          <td class="py-3 px-4 text-center">
-            <button onclick="deleteExtraBillItem('${item.id}')" class="text-rose-500 hover:text-rose-700 p-1 transition">
+          <td class="py-3 px-4 text-center space-x-1 space-x-reverse">
+            <button onclick="editExtraBillItem('${item.id}')" class="text-blue-500 hover:text-blue-700 p-1 transition" title="এডিট করুন">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="deleteExtraBillItem('${item.id}')" class="text-rose-500 hover:text-rose-700 p-1 transition" title="মুছে ফেলুন">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </td>
@@ -2809,9 +2840,10 @@
       showToast("এক্সট্রা বিল মোছা হয়েছে");
     }
 
-    /* DEPOSITS ACTIONS */
+    /* DEPOSITS ACTIONS WITH EDIT SUPPORT */
     function handleDepositSubmit(event) {
       event.preventDefault();
+      const editId = document.getElementById('deposit-edit-id').value;
       const date = document.getElementById('deposit-date').value;
       const memberId = document.getElementById('deposit-member').value;
       const amount = parseFloat(document.getElementById('deposit-amount').value);
@@ -2823,12 +2855,50 @@
       }
 
       const mData = getCurrentMonthData();
-      mData.deposits.unshift({ id: 'd_' + Date.now(), date, memberId, amount, note: note || 'সাধারণ জমা' });
+      if (editId) {
+        const item = mData.deposits.find(x => x.id === editId);
+        if (item) {
+          item.date = date;
+          item.memberId = memberId;
+          item.amount = amount;
+          item.note = note || 'সাধারণ জমা';
+        }
+        showToast("টাকা জমার হিসাব আপডেট করা হয়েছে!");
+        cancelDepositEdit();
+      } else {
+        mData.deposits.unshift({ id: 'd_' + Date.now(), date, memberId, amount, note: note || 'সাধারণ জমা' });
+        showToast("টাকা জমা সফলভাবে তালিকাভুক্ত হয়েছে!");
+        document.getElementById('deposit-amount').value = '';
+        document.getElementById('deposit-note').value = '';
+      }
 
       persistData();
+    }
+
+    function editDepositItem(id) {
+      const mData = getCurrentMonthData();
+      const item = mData.deposits.find(x => x.id === id);
+      if (!item) return;
+
+      document.getElementById('deposit-edit-id').value = item.id;
+      document.getElementById('deposit-date').value = item.date;
+      document.getElementById('deposit-member').value = item.memberId;
+      document.getElementById('deposit-amount').value = item.amount;
+      document.getElementById('deposit-note').value = item.note;
+
+      document.getElementById('deposit-submit-btn').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> জমা আপডেট করুন';
+      document.getElementById('deposit-cancel-btn').classList.remove('hidden');
+      document.getElementById('deposit-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelDepositEdit() {
+      document.getElementById('deposit-edit-id').value = '';
       document.getElementById('deposit-amount').value = '';
       document.getElementById('deposit-note').value = '';
-      showToast("টাকা জমা সফলভাবে তালিকাভুক্ত হয়েছে!");
+      document.getElementById('deposit-submit-btn').innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> জমা রেকর্ড করুন';
+      document.getElementById('deposit-cancel-btn').classList.add('hidden');
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('deposit-date').value = today;
     }
 
     function renderDepositHistory() {
@@ -2836,12 +2906,16 @@
       const tbody = document.getElementById('deposit-history-tbody');
       tbody.innerHTML = '';
 
-      if (!mData.deposits || mData.deposits.length === 0) {
+      const list = mData.deposits || [];
+      const totalDep = list.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      document.getElementById('deposit-total-display').innerText = totalDep.toLocaleString('en-US');
+
+      if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-400">কোন জমা হিসাব নেই</td></tr>`;
         return;
       }
 
-      mData.deposits.forEach(item => {
+      list.forEach(item => {
         const member = window.appData.members.find(m => m.id === item.memberId) || { name: 'অজানা' };
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50";
@@ -2850,8 +2924,11 @@
           <td class="py-3 px-4 font-semibold text-slate-800">${member.name}</td>
           <td class="py-3 px-4 text-slate-500">${item.note}</td>
           <td class="py-3 px-4 text-right font-bold text-emerald-600">৳${item.amount.toLocaleString('en-US')}</td>
-          <td class="py-3 px-4 text-center">
-            <button onclick="deleteDepositItem('${item.id}')" class="text-rose-500 hover:text-rose-700 p-1 transition">
+          <td class="py-3 px-4 text-center space-x-1 space-x-reverse">
+            <button onclick="editDepositItem('${item.id}')" class="text-blue-500 hover:text-blue-700 p-1 transition" title="এডিট করুন">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="deleteDepositItem('${item.id}')" class="text-rose-500 hover:text-rose-700 p-1 transition" title="মুছে ফেলুন">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </td>
@@ -2867,8 +2944,6 @@
       showToast("জমার হিসাব মোছা হয়েছে");
     }
 
-
-    /* MEAL IMPORT: Excel/CSV + Image OCR */
     window.mealImportState = { rows: [], source: '', fileName: '' };
 
     function setMealImportProgress(percent, text) {
@@ -2884,795 +2959,6 @@
       if (percent >= 100) setTimeout(() => wrap.classList.add('hidden'), 700);
     }
 
-    function normalizeImportText(value) {
-      return String(value ?? '')
-        .replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d))
-        .replace(/[\u200B-\u200D\uFEFF]/g, '')
-        .toLowerCase().replace(/[ঃ:.,()\[\]{}]/g, ' ')
-        .replace(/\s+/g, ' ').trim();
-    }
-
-    function normalizeImportNumber(value) {
-      if (value === null || value === undefined || value === '') return 0;
-      const s = String(value).replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d)).replace(',', '.');
-      const n = Number(s.replace(/[^0-9.\-]/g, ''));
-      return Number.isFinite(n) ? n : 0;
-    }
-
-    function parseImportDate(value) {
-      if (value instanceof Date && !isNaN(value)) {
-        return `${value.getFullYear()}-${String(value.getMonth()+1).padStart(2,'0')}-${String(value.getDate()).padStart(2,'0')}`;
-      }
-      const s = String(value ?? '').trim();
-      if (!s) return '';
-      let m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
-      if (m) return `${m[1]}-${String(m[2]).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}`;
-      m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/);
-      if (m) return `${m[3]}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`;
-      return '';
-    }
-
-    function findImportMember(name) {
-      const q = normalizeImportText(name);
-      if (!q) return null;
-      const exact = window.appData.members.find(m => normalizeImportText(m.name) === q);
-      if (exact) return exact;
-      const compact = q.replace(/\s/g, '');
-      const candidates = window.appData.members.filter(m => {
-        const n = normalizeImportText(m.name).replace(/\s/g, '');
-        return n === compact || n.includes(compact) || compact.includes(n);
-      });
-      if (candidates.length === 1) return candidates[0];
-      return null;
-    }
-
-    function findImportHeader(headers, words) {
-      return headers.findIndex(h => words.some(w => normalizeImportText(h).includes(normalizeImportText(w))));
-    }
-
-    function rowsFromSheet(rawRows, sourceName) {
-      if (!Array.isArray(rawRows) || !rawRows.length) return [];
-
-      // PRIMARY FORMAT: the exact Blank Meal Sheet matrix used by this app:
-      // [মেম্বারের নাম | 1 | 2 | ... | 31 | মোট]
-      // Be deliberately tolerant: CSV/XLSX may contain a BOM, extra title rows,
-      // extra columns, or day headers stored as 1.0 / 01 / Bengali digits.
-      const toDayNumber = value => {
-        const raw = String(value ?? '').trim().replace(/^\uFEFF/, '');
-        if (!raw) return null;
-        const s = normalizeOCRDigits(raw).replace(/,/g, '.');
-        const m = s.match(/^(\d{1,2})(?:\.0+)?$/);
-        if (!m) return null;
-        const n = Number(m[1]);
-        return Number.isInteger(n) && n >= 1 && n <= 31 ? n : null;
-      };
-
-      const isNameHeader = value => /মেম্বার|member|নাম|name|সদস্য/i.test(normalizeImportText(value));
-      let headerIndex = -1;
-      let nameCol = 0;
-      let dayMap = [];
-      let bestScore = -1;
-
-      // Look through a generous header area, not just the first 15 rows.
-      rawRows.slice(0, Math.min(rawRows.length, 40)).forEach((row, ri) => {
-        if (!Array.isArray(row)) return;
-        const cells = row.map(v => String(v ?? '').trim().replace(/^\uFEFF/, ''));
-        const candidateMap = [];
-        cells.forEach((cell, ci) => {
-          const d = toDayNumber(cell);
-          if (d !== null && !candidateMap.some(x => x.day === d)) candidateMap.push({ day: d, idx: ci });
-        });
-
-        // The official sheet has consecutive day columns. Prefer a map containing
-        // 1 and many sequential days, while still accepting a shorter month.
-        const sorted = candidateMap.sort((a,b) => a.idx - b.idx);
-        const hasOne = sorted.some(x => x.day === 1);
-        const nameIdx = cells.findIndex(isNameHeader);
-        let sequential = 0;
-        for (let i = 0; i < sorted.length; i++) {
-          if (i === 0 || sorted[i].day === sorted[i-1].day + 1) sequential++;
-          else sequential = 1;
-        }
-        const score = candidateMap.length * 10 + sequential * 3 + (hasOne ? 20 : 0) + (nameIdx >= 0 ? 50 : 0);
-        if (candidateMap.length >= 7 && score > bestScore) {
-          bestScore = score;
-          headerIndex = ri;
-          dayMap = sorted;
-          nameCol = nameIdx >= 0 ? nameIdx : Math.max(0, (dayMap[0]?.idx || 1) - 1);
-        }
-      });
-
-      // Extra safety: if the header is missing but the first column contains names
-      // and columns 2..32 are clearly day positions, recognise it as the matrix.
-      if (headerIndex < 0) {
-        const candidate = rawRows.slice(0, 10).findIndex(row => Array.isArray(row) && row.length >= 8 && row.slice(1).filter(v => toDayNumber(v) !== null).length >= 7);
-        if (candidate >= 0) {
-          headerIndex = candidate;
-          const row = rawRows[candidate];
-          dayMap = row.map((v, idx) => ({day: toDayNumber(v), idx})).filter(x => x.day !== null);
-          nameCol = 0;
-        }
-      }
-
-      if (headerIndex >= 0 && dayMap.length >= 7) {
-        const monthMatch = String(window.appData.activeMonth || '').match(/^(\d{4})-(\d{2})$/);
-        const year = monthMatch ? Number(monthMatch[1]) : new Date().getFullYear();
-        const month = monthMatch ? Number(monthMatch[2]) : new Date().getMonth() + 1;
-        const daysInMonth = new Date(year, month, 0).getDate();
-        const rowsOut = [];
-
-        rawRows.slice(headerIndex + 1).forEach((r, ri) => {
-          if (!Array.isArray(r)) return;
-          const rawName = String(r[nameCol] ?? '').trim().replace(/^\uFEFF/, '');
-          // Ignore footer/instruction rows and rows that are actually empty.
-          const normalizedRowName = normalizeImportText(rawName);
-          // The second header row contains weekday names (বার/রবিবার/সোমবার...).
-          // Never treat that header row as a mess member.
-          const weekdayHeader = /^(বার|রবিবার|সোমবার|মঙ্গলবার|বুধবার|বৃহস্পতিবার|শুক্রবার|শনিবার|sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/i.test(normalizedRowName);
-          if (!rawName || weekdayHeader || /^(মোট|grand total|total|নির্দেশনা|instruction)$/i.test(normalizedRowName)) return;
-
-          dayMap.forEach(({ day, idx }) => {
-            if (day > daysInMonth) return;
-            const rawValue = String(r[idx] ?? '').trim();
-            if (!rawValue) return;
-            const total = normalizeImportNumber(rawValue);
-            if (!Number.isFinite(total) || total < 0) return;
-            rowsOut.push({
-              id: `matrix_${Date.now()}_${ri}_${day}`,
-              source: sourceName || 'Blank Meal Sheet Excel/CSV',
-              date: `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`,
-              rawName,
-              bf: 0, ln: 0, dn: 0,
-              total,
-              totalMode: true,
-              importMode: 'matrix',
-              memberId: '', memberName: '', status: 'unmatched'
-            });
-          });
-        });
-
-        // Once a Blank Sheet matrix header is positively detected, stay in matrix mode
-        // even when every day cell is blank. This prevents an empty template from
-        // falling through into the old Date/Name/Breakfast/Lunch/Dinner parser.
-        return rowsOut;
-      }
-
-      // ROW FORMAT (flexible): Date + Medical Officer/Name + Total Meal.
-      // This parser deliberately does NOT require Breakfast/Lunch/Dinner. It can also
-      // preserve an optional Attribute column from externally maintained CSV/XLSX files.
-      const normalizeHeader = value => normalizeImportText(value).replace(/[\-_\/]+/g, ' ').replace(/\s+/g, ' ').trim();
-      const headerMatches = (h, aliases) => {
-        const n = normalizeHeader(h);
-        return aliases.some(a => n === normalizeHeader(a) || n.includes(normalizeHeader(a)));
-      };
-      const findHeaderIndex = (headers, aliases) => headers.findIndex(h => headerMatches(h, aliases));
-      const isOfficerHeader = h => headerMatches(h, [
-        'medical officer', 'medical officer name', 'medical officer\'s name',
-        'medical_officer', 'officer', 'officer name', 'officer_name',
-        'doctor', 'doctor name', 'physician', 'physician name',
-        'মেডিকেল অফিসার', 'মেডিকেল অফিসারের নাম', 'অফিসার', 'অফিসারের নাম'
-      ]);
-      const isAttributeHeader = h => headerMatches(h, [
-        'attribute', 'attributes', 'attr', 'type', 'category', 'designation',
-        'অ্যাট্রিবিউট', 'বৈশিষ্ট্য', 'শ্রেণি', 'ধরন'
-      ]);
-
-      // Find a real header row anywhere near the top. Many CSV/XLSX exports put a
-      // report title or blank rows before the actual column headings.
-      let rowHeaderIndex = -1;
-      let rowHeaders = [];
-      let rowScore = -1;
-      rawRows.slice(0, Math.min(rawRows.length, 25)).forEach((row, ri) => {
-        if (!Array.isArray(row)) return;
-        const cells = row.map(v => String(v ?? '').trim().replace(/^\uFEFF/, ''));
-        const di0 = findHeaderIndex(cells, ['তারিখ','date','day','date of meal','meal date']);
-        const ni0 = findHeaderIndex(cells, ['নাম','name','member','member name','সদস্য']);
-        const oi0 = cells.findIndex(isOfficerHeader);
-        const ti0 = findHeaderIndex(cells, ['মোট মিল','মোট','total meal','total meals','meal total','total meals count','meal count','meals','total']);
-        const ai0 = cells.findIndex(isAttributeHeader);
-        const score = (di0 >= 0 ? 30 : 0) + (ni0 >= 0 ? 35 : 0) + (oi0 >= 0 ? 45 : 0) + (ti0 >= 0 ? 35 : 0) + (ai0 >= 0 ? 10 : 0);
-        if (score > rowScore && ((di0 >= 0 && (ni0 >= 0 || oi0 >= 0) && ti0 >= 0) || (oi0 >= 0 && ti0 >= 0))) {
-          rowScore = score; rowHeaderIndex = ri; rowHeaders = cells;
-        }
-      });
-
-      if (rowHeaderIndex >= 0) {
-        const di = findHeaderIndex(rowHeaders, ['তারিখ','date','day','date of meal','meal date']);
-        const ni = findHeaderIndex(rowHeaders, ['নাম','name','member','member name','সদস্য']);
-        const oi = rowHeaders.findIndex(isOfficerHeader);
-        const ti = findHeaderIndex(rowHeaders, ['মোট মিল','মোট','total meal','total meals','meal total','meal count','meals','total']);
-        const ai = rowHeaders.findIndex(isAttributeHeader);
-        const bi = findHeaderIndex(rowHeaders, ['সকাল','breakfast','bf']);
-        const li = findHeaderIndex(rowHeaders, ['দুপুর','lunch','ln']);
-        const dnr = findHeaderIndex(rowHeaders, ['রাত','dinner','dn']);
-        const hasPeriodColumns = bi >= 0 || li >= 0 || dnr >= 0;
-        const data = rawRows.slice(rowHeaderIndex + 1);
-
-        // Explicit total-meal format: use Medical Officer as the member key when
-        // present; otherwise use the normal Name/Member column. Attribute is kept
-        // for display and auditing, but meal storage still uses the matched member.
-        if (di >= 0 && ti >= 0 && (oi >= 0 || ni >= 0) && !hasPeriodColumns) {
-          return data.map((r, idx) => {
-            const officerName = oi >= 0 ? String(r[oi] ?? '').trim() : '';
-            const normalName = ni >= 0 ? String(r[ni] ?? '').trim() : '';
-            const rawName = officerName || normalName;
-            return {
-              id: `imp_total_${Date.now()}_${idx}`,
-              source: sourceName || 'ফাইল',
-              date: parseImportDate(r[di]),
-              attribute: ai >= 0 ? String(r[ai] ?? '').trim() : '',
-              officerName: officerName || normalName,
-              rawName,
-              bf: 0, ln: 0, dn: 0,
-              total: normalizeImportNumber(r[ti]),
-              totalMode: true,
-              importMode: 'total-row',
-              memberId: '', memberName: '', status: 'unmatched'
-            };
-          }).filter(r => r.rawName || r.date);
-        }
-
-        // If the file contains Date/Name/Breakfast/Lunch/Dinner, keep the legacy path.
-        // It is intentionally only selected when those period columns actually exist.
-        if (di >= 0 && (ni >= 0 || oi >= 0) && hasPeriodColumns) {
-          const nameIndex = ni >= 0 ? ni : oi;
-          return data.map((r, idx) => ({
-            id: `imp_${Date.now()}_${idx}`,
-            source: sourceName || 'ফাইল',
-            date: parseImportDate(r[di]),
-            attribute: ai >= 0 ? String(r[ai] ?? '').trim() : '',
-            officerName: String(r[nameIndex] ?? '').trim(),
-            rawName: String(r[nameIndex] ?? '').trim(),
-            bf: normalizeImportNumber(bi >= 0 ? r[bi] : 0),
-            ln: normalizeImportNumber(li >= 0 ? r[li] : 0),
-            dn: normalizeImportNumber(dnr >= 0 ? r[dnr] : 0),
-            totalMode: false,
-            importMode: 'legacy',
-            memberId: '', memberName: '', status: 'unmatched'
-          })).filter(r => r.rawName || r.date);
-        }
-      }
-
-      // Headerless Date | Name/Medical Officer | Total format.
-      // Only accept rows that consistently look like dates + names + numeric totals.
-      const headerlessRows = rawRows.filter(r => Array.isArray(r) && r.length >= 3);
-      if (headerlessRows.length) {
-        const looksLikeTotalRows = headerlessRows.every(r => {
-          const d = parseImportDate(r[0]);
-          const name = String(r[1] ?? '').trim();
-          const total = String(r[2] ?? '').trim();
-          return !!d && !!name && total !== '' && Number.isFinite(normalizeImportNumber(total));
-        });
-        if (looksLikeTotalRows) {
-          return headerlessRows.map((r, idx) => ({
-            id: `imp_total_${Date.now()}_${idx}`,
-            source: sourceName || 'ফাইল',
-            date: parseImportDate(r[0]),
-            attribute: '',
-            officerName: String(r[1] ?? '').trim(),
-            rawName: String(r[1] ?? '').trim(),
-            bf: 0, ln: 0, dn: 0,
-            total: normalizeImportNumber(r[2]),
-            totalMode: true,
-            importMode: 'total-row',
-            memberId: '', memberName: '', status: 'unmatched'
-          }));
-        }
-      }
-
-      // Original backward-compatible Date | Name | Breakfast | Lunch | Dinner format.
-      const first = (rawRows[0] || []).map(v => String(v ?? '').trim());
-      const hasHeader = first.some(v => /তারিখ|date|নাম|name|member|সদস্য|সকাল|breakfast|দুপুর|lunch|রাত|dinner|bf|ln|dn/i.test(v));
-      const headers = hasHeader ? first : ['তারিখ','নাম','সকাল','দুপুর','রাত'];
-      const data = hasHeader ? rawRows.slice(1) : rawRows;
-      const di = findImportHeader(headers, ['তারিখ','date','day']);
-      const ni = findImportHeader(headers, ['নাম','name','member','সদস্য']);
-      const bi = findImportHeader(headers, ['সকাল','breakfast','bf']);
-      const li = findImportHeader(headers, ['দুপুর','lunch','ln']);
-      const dnr = findImportHeader(headers, ['রাত','dinner','dn']);
-      return data.map((r, idx) => ({
-        id: `imp_${Date.now()}_${idx}`,
-        source: sourceName || 'ফাইল',
-        date: parseImportDate(di >= 0 ? r[di] : r[0]),
-        attribute: '', officerName: String(ni >= 0 ? r[ni] : r[1] ?? '').trim(),
-        rawName: String(ni >= 0 ? r[ni] : r[1] ?? '').trim(),
-        bf: normalizeImportNumber(bi >= 0 ? r[bi] : r[2]),
-        ln: normalizeImportNumber(li >= 0 ? r[li] : r[3]),
-        dn: normalizeImportNumber(dnr >= 0 ? r[dnr] : r[4]),
-        totalMode: false,
-        importMode: 'legacy',
-        memberId: '', memberName: '', status: 'unmatched'
-      })).filter(r => r.rawName || r.date);
-    }
-
-    function prepareMealImportRows(rows, sourceName) {
-      const prepared = rows.map(r => {
-        r.total = r.totalMode ? normalizeImportNumber(r.total) : undefined;
-        const member = findImportMember(r.rawName || r.officerName || r.memberName || '');
-        r.memberId = member ? member.id : '';
-        r.memberName = member ? member.name : '';
-        if (!r.date || !r.rawName) r.status = 'invalid';
-        else if (!member) r.status = 'unmatched';
-        else {
-          const mData = getCurrentMonthData();
-          const existing = mData.meals[r.date] && mData.meals[r.date][member.id];
-          r.status = existing ? 'duplicate' : 'ready';
-        }
-        return r;
-      });
-      window.mealImportState = { rows: prepared, source: sourceName || '', fileName: sourceName || '' };
-      renderMealImportPreview();
-    }
-
-    function escapeMealImportHtml(value) {
-      return String(value ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
-    function renderMealImportPreview() {
-      const state = window.mealImportState;
-      const box = document.getElementById('meal-import-preview');
-      const body = document.getElementById('meal-import-preview-body');
-      const summary = document.getElementById('meal-import-summary');
-      const unmatched = document.getElementById('meal-import-unmatched');
-      const status = document.getElementById('meal-import-status');
-      const table = body?.closest('table');
-      if (!box || !body) return;
-      box.classList.remove('hidden'); body.innerHTML = '';
-
-      const ready = state.rows.filter(r => r.status === 'ready').length;
-      const dup = state.rows.filter(r => r.status === 'duplicate').length;
-      const bad = state.rows.filter(r => r.status === 'unmatched' || r.status === 'invalid');
-      const totalImportMode = state.rows.length > 0 && state.rows.every(r => r.totalMode || r.importMode === 'matrix');
-      summary.innerText = `${state.rows.length}টি row • ${ready}টি নতুন • ${dup}টি আগে আছে • ${bad.length}টি যাচাই দরকার${totalImportMode ? ' • মোট মিল Import' : ''}`;
-      status.innerText = `${state.fileName || 'Import'} • Preview প্রস্তুত`;
-
-      if (table) {
-        let thead = table.querySelector('thead');
-        if (!thead) { thead = document.createElement('thead'); table.insertBefore(thead, table.firstChild); }
-        thead.className = 'sticky top-0 bg-white shadow-sm';
-        thead.innerHTML = totalImportMode
-          ? '<tr><th class="p-2 border-b text-left">তারিখ</th><th class="p-2 border-b text-left">অ্যাট্রিবিউট</th><th class="p-2 border-b text-left">মেডিকেল অফিসার</th><th class="p-2 border-b text-center">মোট মিল</th><th class="p-2 border-b text-center">ম্যাচ/এডিট</th><th class="p-2 border-b text-center">অবস্থা</th></tr>'
-          : '<tr><th class="p-2 border-b text-left">তারিখ</th><th class="p-2 border-b text-left">মেম্বার</th><th class="p-2 border-b text-center">মোট মিল</th><th class="p-2 border-b text-center">সকাল</th><th class="p-2 border-b text-center">দুপুর</th><th class="p-2 border-b text-center">রাত</th><th class="p-2 border-b text-center">ম্যাচ/এডিট</th><th class="p-2 border-b text-center">অবস্থা</th></tr>';
-      }
-
-      bad.length ? unmatched.classList.remove('hidden') : unmatched.classList.add('hidden');
-      unmatched.innerHTML = `<strong>যাচাই দরকার:</strong> ${bad.map(r => `${escapeMealImportHtml(r.rawName || r.officerName || '(নাম নেই)')} — ${escapeMealImportHtml(r.date || '(তারিখ নেই)')}`).join(' • ')}`;
-
-      state.rows.forEach((r, i) => {
-        const tr = document.createElement('tr');
-        tr.className = r.status === 'ready' ? 'meal-import-row-ready' : r.status === 'duplicate' ? 'meal-import-row-duplicate' : 'meal-import-row-unmatched';
-        const label = r.status === 'ready' ? 'নতুন' : r.status === 'duplicate' ? 'আগে আছে' : r.status === 'invalid' ? 'অসম্পূর্ণ' : 'নাম মেলেনি';
-        const safeName = escapeMealImportHtml(r.rawName || r.officerName || '');
-        const safeAttribute = escapeMealImportHtml(r.attribute || '');
-        const totalValue = r.totalMode ? (r.total ?? '') : '';
-        if (totalImportMode) {
-          tr.innerHTML = `<td class="p-2 border-b whitespace-nowrap">${escapeMealImportHtml(r.date || '-')}</td>
-            <td class="p-2 border-b"><span class="px-2 py-1 rounded-lg bg-white border">${safeAttribute || '-'}</span></td>
-            <td class="p-2 border-b"><input class="w-full min-w-[170px] border rounded-lg px-2 py-1 bg-white" value="${safeName}" onchange="rematchMealImportRow(${i}, this.value)"></td>
-            <td class="p-2 border-b text-center"><input type="number" step="0.5" min="0" class="w-24 border rounded-lg px-2 py-1 text-center font-bold bg-white" value="${totalValue}" onchange="editMealImportValue(${i}, 'total', this.value)"></td>
-            <td class="p-2 border-b text-center"><span class="px-2 py-1 rounded-full bg-white border">${escapeMealImportHtml(r.memberName || 'নাম মেলেনি')}</span></td>
-            <td class="p-2 border-b text-center"><span class="px-2 py-1 rounded-full bg-white border">${label}</span></td>`;
-        } else {
-          tr.innerHTML = `<td class="p-2 border-b">${escapeMealImportHtml(r.date || '-')}</td>
-            <td class="p-2 border-b"><input class="w-full min-w-[130px] border rounded-lg px-2 py-1 bg-white" value="${safeName}" onchange="rematchMealImportRow(${i}, this.value)"></td>
-            <td class="p-2 border-b text-center"><input type="number" step="0.5" min="0" class="w-20 border rounded-lg px-2 py-1 text-center font-bold bg-white" value="${totalValue}" placeholder="-" onchange="editMealImportValue(${i}, 'total', this.value)"></td>
-            <td class="p-2 border-b text-center"><input type="number" step="0.5" min="0" class="w-16 border rounded-lg px-2 py-1 text-center bg-white" value="${r.bf ?? 0}" onchange="editMealImportValue(${i}, 'bf', this.value)"></td>
-            <td class="p-2 border-b text-center"><input type="number" step="0.5" min="0" class="w-16 border rounded-lg px-2 py-1 text-center bg-white" value="${r.ln ?? 0}" onchange="editMealImportValue(${i}, 'ln', this.value)"></td>
-            <td class="p-2 border-b text-center"><input type="number" step="0.5" min="0" class="w-16 border rounded-lg px-2 py-1 text-center bg-white" value="${r.dn ?? 0}" onchange="editMealImportValue(${i}, 'dn', this.value)"></td>
-            <td class="p-2 border-b text-center"><span class="px-2 py-1 rounded-full bg-white border">${escapeMealImportHtml(r.memberName || 'নাম মেলেনি')}</span></td>
-            <td class="p-2 border-b text-center"><span class="px-2 py-1 rounded-full bg-white border">${label}</span></td>`;
-        }
-        body.appendChild(tr);
-      });
-      const confirmBtn = document.getElementById('meal-import-confirm-btn');
-      if (confirmBtn) confirmBtn.disabled = ready === 0;
-    }
-
-    function editMealImportValue(index, field, value) {
-      const r = window.mealImportState.rows[index];
-      if (!r) return;
-      const n = normalizeImportNumber(value);
-      if (field === 'total') {
-        r.totalMode = true;
-        r.importMode = r.importMode || 'matrix';
-        r.total = n;
-        r.bf = 0; r.ln = 0; r.dn = 0;
-      } else {
-        r.totalMode = false;
-        r.importMode = 'legacy';
-        r.total = undefined;
-        r[field] = n;
-      }
-      const member = findImportMember(r.rawName);
-      r.memberId = member ? member.id : '';
-      r.memberName = member ? member.name : '';
-      r.status = !r.date || !r.rawName ? 'invalid' : !member ? 'unmatched' : (getCurrentMonthData().meals[r.date] && getCurrentMonthData().meals[r.date][member.id] ? 'duplicate' : 'ready');
-      renderMealImportPreview();
-    }
-
-    function rematchMealImportRow(index, name) {
-      const r = window.mealImportState.rows[index];
-      if (!r) return;
-      r.rawName = name.trim();
-      r.officerName = r.rawName;
-      const member = findImportMember(r.rawName);
-      r.memberId = member ? member.id : '';
-      r.memberName = member ? member.name : '';
-      r.status = !r.date || !r.rawName ? 'invalid' : !member ? 'unmatched' : (getCurrentMonthData().meals[r.date] && getCurrentMonthData().meals[r.date][member.id] ? 'duplicate' : 'ready');
-      renderMealImportPreview();
-    }
-
-    function getMealTemplateMeta() {
-      const m = String(window.appData.activeMonth || '').match(/^(\d{4})-(\d{2})$/);
-      const year = m ? Number(m[1]) : new Date().getFullYear();
-      const month = m ? Number(m[2]) : new Date().getMonth() + 1;
-      const days = new Date(year, month, 0).getDate();
-      const monthLabel = document.getElementById('month-selector-label')?.innerText || `${year}-${String(month).padStart(2,'0')}`;
-      const members = Array.isArray(window.appData.members) ? window.appData.members.slice() : [];
-      return { year, month, days, monthLabel, members };
-    }
-
-    function buildMealMatrixRows() {
-      const { days, members } = getMealTemplateMeta();
-      const header = ['মেম্বারের নাম', ...Array.from({length: days}, (_, i) => String(i + 1)), 'মোট'];
-      const rows = [header];
-      members.forEach(member => {
-        const name = String(member.name || '').trim();
-        if (!name) return;
-        rows.push([name, ...Array(days).fill(''), '']);
-      });
-      return rows;
-    }
-
-    function safeMealTemplateFileName(ext) {
-      const { year, month } = getMealTemplateMeta();
-      return `meal-sheet-${year}-${String(month).padStart(2,'0')}.${ext}`;
-    }
-
-    async function downloadMealExcelTemplate() {
-      try {
-        const { year, month, days, monthLabel, members } = getMealTemplateMeta();
-        if (!members.length) { showToast('কোনো মেস মেম্বার পাওয়া যায়নি', true); return; }
-
-        // MONTH-WISE MEMBER MATRIX (no Breakfast/Lunch/Dinner columns).
-        // Row 1: day numbers, Row 2: weekday names, Row 3+: mess members.
-        const weekdayBn = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
-        const rows = [
-          ['মেস মেম্বারের নাম', ...Array.from({length: days}, (_, i) => i + 1)],
-          ['বার', ...Array.from({length: days}, (_, i) => weekdayBn[new Date(year, month - 1, i + 1).getDay()])]
-        ];
-        members.forEach(member => {
-          const name = String(member.name || '').trim();
-          if (name) rows.push([name, ...Array(days).fill('')]);
-        });
-
-        if (!window.ExcelJS) {
-          const ws = XLSX.utils.aoa_to_sheet(rows);
-          ws['!cols'] = [{ wch: 28 }, ...Array.from({length: days}, () => ({ wch: 12 }))];
-          const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, 'Meal Sheet');
-          XLSX.writeFile(wb, safeMealTemplateFileName('xlsx'));
-          showToast('মাসভিত্তিক মেম্বার Excel Template ডাউনলোড হয়েছে');
-          return;
-        }
-
-        const wb = new ExcelJS.Workbook();
-        const ws = wb.addWorksheet('Meal Sheet', {
-          pageSetup: { orientation: 'landscape', paperSize: 9, fitToPage: true, fitToWidth: 1, fitToHeight: 0 },
-          views: [{ showGridLines: false }]
-        });
-        ws.pageSetup.margins = { left: 0.2, right: 0.2, top: 0.3, bottom: 0.3, header: 0.1, footer: 0.1 };
-        const totalCols = days + 1;
-        const endCol = ws.getColumn(totalCols).letter;
-
-        ws.mergeCells(`A1:${endCol}1`);
-        ws.getCell('A1').value = `অফিসার্স মেস - ফৌজদারহাট ক্যাডেট কলেজ — ${monthLabel}`;
-        ws.getCell('A1').font = { name: 'Aptos', size: 16, bold: true };
-        ws.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
-        ws.getRow(1).height = 25;
-
-        // First data/header row: member-name column + date numbers.
-        ws.getCell(2, 1).value = 'মেস মেম্বারের নাম';
-        for (let d = 1; d <= days; d++) ws.getCell(2, d + 1).value = d;
-        // Second header row: weekday names for each date.
-        ws.getCell(3, 1).value = 'বার';
-        for (let d = 1; d <= days; d++) ws.getCell(3, d + 1).value = weekdayBn[new Date(year, month - 1, d).getDay()];
-
-        for (let r = 2; r <= 3; r++) {
-          for (let c = 1; c <= totalCols; c++) {
-            const cell = ws.getCell(r, c);
-            cell.font = { name: 'Aptos', size: 9, bold: true };
-            cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: r === 2 ? 'FFE2E8F0' : 'FFF1F5F9' } };
-            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
-          }
-        }
-        ws.getColumn(1).width = 28;
-        for (let c = 2; c <= totalCols; c++) ws.getColumn(c).width = 12;
-
-        members.forEach((member, i) => {
-          const r = 4 + i;
-          ws.getCell(r, 1).value = String(member.name || '').trim();
-          for (let c = 1; c <= totalCols; c++) {
-            const cell = ws.getCell(r, c);
-            cell.font = { name: 'Aptos', size: 9 };
-            cell.alignment = { horizontal: c === 1 ? 'left' : 'center', vertical: 'middle' };
-            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
-          }
-          ws.getRow(r).height = 20;
-        });
-
-        ws.views = [{ state: 'frozen', xSplit: 1, ySplit: 3 }];
-        ws.autoFilter = { from: { row: 2, column: 1 }, to: { row: 3 + members.length, column: totalCols } };
-        const buf = await wb.xlsx.writeBuffer();
-        const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = safeMealTemplateFileName('xlsx');
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-        showToast('মাসভিত্তিক মেম্বার Excel Template ডাউনলোড হয়েছে');
-      } catch (e) { console.error(e); showToast('Excel Template তৈরি করতে সমস্যা হয়েছে', true); }
-    }
-
-    function downloadMealCSVTemplate() {
-      try {
-        const { year, month, days, members } = getMealTemplateMeta();
-        if (!members.length) { showToast('কোনো মেস মেম্বার পাওয়া যায়নি', true); return; }
-        const weekdayBn = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
-        // Exact CSV structure requested by the user:
-        // Row 1 = member-name column + date numbers
-        // Row 2 = weekday names
-        // Row 3+ = members already present in the app.
-        const rows = [
-          ['মেস মেম্বারের নাম', ...Array.from({length: days}, (_, i) => i + 1)],
-          ['বার', ...Array.from({length: days}, (_, i) => weekdayBn[new Date(year, month - 1, i + 1).getDay()])]
-        ];
-        members.forEach(member => {
-          const name = String(member.name || '').trim();
-          if (name) rows.push([name, ...Array(days).fill('')]);
-        });
-        const csv = rows.map(row => row.map(v => {
-          const value = String(v ?? '');
-          return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
-        }).join(',')).join('\r\n');
-        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = safeMealTemplateFileName('csv');
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-        showToast('মাসভিত্তিক মেম্বার CSV Template ডাউনলোড হয়েছে');
-      } catch (e) { console.error(e); showToast('CSV Template তৈরি করতে সমস্যা হয়েছে', true); }
-    }
-
-    async function handleMealFileImport(file) {
-      if (!file) return;
-      try {
-        setMealImportProgress(10, 'Excel/CSV পড়া হচ্ছে...');
-        const data = await file.arrayBuffer();
-        const wb = XLSX.read(data, { type: 'array', cellDates: true });
-        const sheet = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
-        setMealImportProgress(80, 'নাম মিলানো হচ্ছে...');
-        prepareMealImportRows(rows, file.name);
-        setMealImportProgress(100, 'Preview প্রস্তুত');
-      } catch (e) {
-        console.error(e); showToast('Excel/CSV পড়তে সমস্যা হয়েছে', true); setMealImportProgress(100, 'Import ব্যর্থ');
-      }
-    }
-
-    function normalizeOCRDigits(value) {
-      return String(value ?? '').replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d));
-    }
-
-    function findOCRMemberInLine(line) {
-      const raw = normalizeImportText(line);
-      const compact = raw.replace(/\s/g, '');
-      if (!compact) return null;
-      let best = null;
-      let bestScore = 0;
-      (window.appData.members || []).forEach(member => {
-        const n = normalizeImportText(member.name);
-        const c = n.replace(/\s/g, '');
-        if (!c) return;
-        if (compact.includes(c)) { best = member; bestScore = 1000 + c.length; return; }
-        const tokens = n.split(' ').filter(Boolean);
-        const hit = tokens.filter(t => compact.includes(t.replace(/\s/g,''))).length;
-        const score = hit / Math.max(1, tokens.length);
-        if (score > bestScore) { best = member; bestScore = score; }
-      });
-      return bestScore >= 0.5 ? best : null;
-    }
-
-    function groupOCRWordsByRow(words, tolerance) {
-      const groups = [];
-      (words || []).filter(w => String(w.text || '').trim()).forEach(w => {
-        const y = (Number(w.bbox?.y0 || 0) + Number(w.bbox?.y1 || 0)) / 2;
-        let g = groups.find(x => Math.abs(x.y - y) <= tolerance);
-        if (!g) { g = { y, words: [] }; groups.push(g); }
-        g.words.push(w);
-        g.y = g.words.reduce((a, q) => a + ((Number(q.bbox?.y0 || 0) + Number(q.bbox?.y1 || 0)) / 2), 0) / g.words.length;
-      });
-      return groups.sort((a,b) => a.y - b.y);
-    }
-
-    function findOCRMemberByWords(words) {
-      const line = (words || []).sort((a,b) => (a.bbox?.x0 || 0) - (b.bbox?.x0 || 0)).map(w => w.text).join(' ');
-      return { member: findOCRMemberInLine(line), line };
-    }
-
-    async function recognizeCellValue(canvas, x0, y0, x1, y1) {
-      const padX = Math.max(2, Math.round((x1 - x0) * 0.12));
-      const padY = Math.max(2, Math.round((y1 - y0) * 0.15));
-      const w = Math.max(8, x1 - x0 - padX * 2);
-      const h = Math.max(8, y1 - y0 - padY * 2);
-      const c = document.createElement('canvas');
-      c.width = Math.max(80, w * 3); c.height = Math.max(60, h * 3);
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,c.width,c.height);
-      ctx.drawImage(canvas, x0 + padX, y0 + padY, w, h, 0, 0, c.width, c.height);
-      try {
-        const rr = await Tesseract.recognize(c, 'eng', {
-          tessedit_char_whitelist: '0123456789.,-',
-          tessedit_pageseg_mode: '10',
-          user_defined_dpi: '300'
-        });
-        const raw = normalizeOCRDigits(rr?.data?.text || '').replace(/,/g,'.');
-        const matches = raw.match(/\d+(?:\.\d+)?/g) || [];
-        if (!matches.length) return null;
-        const n = normalizeImportNumber(matches[matches.length - 1]);
-        if (!Number.isFinite(n) || n < 0 || n > 20) return null;
-        return Math.round(n * 2) / 2;
-      } catch (_) { return null; }
-    }
-
-    async function parseBlankMealMatrixImage(file) {
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-      try {
-        await new Promise((resolve,reject) => { img.onload=resolve; img.onerror=reject; img.src=url; });
-        const maxW = 2200;
-        const scale = Math.min(1, maxW / img.naturalWidth);
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.naturalWidth * scale); canvas.height = Math.round(img.naturalHeight * scale);
-        const ctx = canvas.getContext('2d', { willReadFrequently:true });
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-
-        setMealImportProgress(25, 'মেম্বারের নাম ও টেবিলের সারি শনাক্ত করা হচ্ছে...');
-        const ocr = await Tesseract.recognize(canvas, 'ben+eng', {
-          preserve_interword_spaces:'1', tessedit_pageseg_mode:'6', user_defined_dpi:'300'
-        });
-        const words = ocr?.data?.words || [];
-        const rows = groupOCRWordsByRow(words, Math.max(10, canvas.height * 0.012));
-        const activeM = window.appData.activeMonth || formatMonthLabel(window.appData.activeMonth);
-        const ym = String(activeM).match(/^(\d{4})-(\d{2})/);
-        const year = ym ? Number(ym[1]) : new Date().getFullYear();
-        const month = ym ? Number(ym[2]) : new Date().getMonth()+1;
-        const days = new Date(year, month, 0).getDate();
-
-        // Locate printed day header centers from OCR. The generated sheet always has
-        // 1..31 day columns, so once 1 and 31 are found we can interpolate the full grid.
-        const headerWords = words.filter(w => {
-          const y = (Number(w.bbox?.y0||0)+Number(w.bbox?.y1||0))/2;
-          const t = normalizeOCRDigits(w.text).trim();
-          return y < canvas.height * 0.30 && /^(?:[1-9]|[12]\d|3[01])$/.test(t);
-        });
-        const centers = {};
-        headerWords.forEach(w => {
-          const d = Number(normalizeOCRDigits(w.text));
-          const x = (Number(w.bbox?.x0||0)+Number(w.bbox?.x1||0))/2;
-          if (!centers[d]) centers[d] = []; centers[d].push(x);
-        });
-        let x1 = centers[1]?.reduce((a,b)=>a+b,0)/(centers[1]?.length||1);
-        let x31 = centers[Math.min(31,days)]?.reduce((a,b)=>a+b,0)/(centers[Math.min(31,days)]?.length||1);
-        if (!Number.isFinite(x1) || !Number.isFinite(x31) || x31 <= x1) {
-          const left = canvas.width * 0.13, right = canvas.width * 0.955;
-          x1 = left + (right-left)/days*0.5;
-          x31 = left + (right-left)*(days-0.5)/days;
-        }
-        const dayStep = (x31 - x1) / Math.max(1, days-1);
-        const dayCenters = Array.from({length:days},(_,i)=>x1+i*dayStep);
-
-        // Printed names are the most reliable row anchors. Only create rows for names
-        // that match current members, preventing header/grid OCR noise from importing.
-        const memberAnchors = [];
-        rows.forEach(g => {
-          const {member} = findOCRMemberByWords(g.words);
-          if (member && !memberAnchors.some(a => a.member.id === member.id)) memberAnchors.push({member,y:g.y});
-        });
-        memberAnchors.sort((a,b)=>a.y-b.y);
-        if (!memberAnchors.length) throw new Error('member rows not detected');
-
-        setMealImportProgress(45, `${memberAnchors.length} জন সদস্যের সারি পাওয়া গেছে; ঘরের মিল পড়া হচ্ছে...`);
-        const imageData = ctx.getImageData(0,0,canvas.width,canvas.height).data;
-        const rowStep = memberAnchors.length > 1 ? memberAnchors.slice(1).map((a,i)=>a.y-memberAnchors[i].y).sort((a,b)=>a-b)[Math.floor((memberAnchors.length-1)/2)] : canvas.height*0.035;
-        const rowsOut = [];
-        for (let mi=0; mi<memberAnchors.length; mi++) {
-          const a = memberAnchors[mi];
-          const yTop = Math.max(0, Math.round(a.y - rowStep*0.45));
-          const yBottom = Math.min(canvas.height, Math.round(a.y + rowStep*0.45));
-          for (let d=1; d<=days; d++) {
-            const cx = dayCenters[d-1];
-            const xLeft = Math.max(0, Math.round(cx - dayStep*0.47));
-            const xRight = Math.min(canvas.width, Math.round(cx + dayStep*0.47));
-            // Ignore cells with no visible dark handwriting/ink. Grid lines alone are
-            // thin and are not treated as values; then OCR the small cell independently.
-            let dark=0, ink=0;
-            const sx = Math.max(xLeft+2, Math.round(xLeft + (xRight-xLeft)*0.18));
-            const ex = Math.min(xRight-2, Math.round(xRight - (xRight-xLeft)*0.18));
-            const sy = Math.max(yTop+2, Math.round(yTop + (yBottom-yTop)*0.18));
-            const ey = Math.min(yBottom-2, Math.round(yBottom - (yBottom-yTop)*0.18));
-            for (let yy=sy; yy<ey; yy+=Math.max(1,Math.floor((ey-sy)/10))) {
-              for (let xx=sx; xx<ex; xx+=Math.max(1,Math.floor((ex-sx)/8))) {
-                const p=(yy*canvas.width+xx)*4, lum=(imageData[p]+imageData[p+1]+imageData[p+2])/3;
-                if (lum < 150) dark++;
-                if (lum < 90) ink++;
-              }
-            }
-            if (ink < 3 && dark < 10) continue;
-            const value = await recognizeCellValue(canvas,xLeft,yTop,xRight,yBottom);
-            if (value === null) continue;
-            const date = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            rowsOut.push({id:`ocr_matrix_${Date.now()}_${mi}_${d}`,source:'Blank Matrix OCR',date,rawName:a.member.name,bf:0,ln:0,dn:0,total:value,totalMode:true,memberId:a.member.id,memberName:a.member.name,status:'ready'});
-          }
-          if (mi % 3 === 0) setMealImportProgress(50 + (mi/memberAnchors.length)*40, `OCR চলছে — ${mi+1}/${memberAnchors.length} জনের সারি...`);
-        }
-        return rowsOut;
-      } finally { URL.revokeObjectURL(url); }
-    }
-
-    function parseOCRMealText(text) {
-      // Backward-compatible parser for old Excel-like OCR text.
-      const rows=[]; const lines=String(text||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
-      lines.forEach((line,idx)=>{
-        const nums=(normalizeOCRDigits(line).match(/\d+(?:[.,]\d+)?/g)||[]).map(normalizeImportNumber);
-        if(nums.length<4)return;
-        const date=parseImportDate(nums[0]);
-        const member=findOCRMemberInLine(line);
-        if(date && member) rows.push({id:`ocr_text_${Date.now()}_${idx}`,source:'OCR',date,rawName:member.name,bf:0,ln:0,dn:0,total:nums[nums.length-1],totalMode:true,memberId:'',memberName:'',status:'unmatched'});
-      });
-      return rows;
-    }
-
-    async function handleMealImageOCR(file) {
-      if (!file) return;
-      try {
-        setMealImportProgress(5, 'Blank Meal Sheet-এর ছবি প্রস্তুত হচ্ছে...');
-        const rows = await parseBlankMealMatrixImage(file);
-        if (!rows.length) {
-          prepareMealImportRows([], file.name + ' (Blank Matrix OCR)');
-          showToast('কোনো পূরণ করা মিল পাওয়া যায়নি। প্রতিটি তারিখের ঘরে মোট মিল যেমন 2.5 লিখে পরিষ্কার ছবি দিন।', true);
-        } else {
-          prepareMealImportRows(rows, file.name + ' (Blank Matrix OCR)');
-          showToast(`${rows.length}টি স্ক্যান করা মিল Preview-তে এসেছে`);
-        }
-        setMealImportProgress(100, rows.length ? 'OCR Preview প্রস্তুত' : 'কোনো পূরণ করা ঘর পাওয়া যায়নি');
-      } catch (e) {
-        console.error(e); showToast('Blank Meal Sheet OCR করতে সমস্যা হয়েছে। পরিষ্কার, সোজা ছবি দিন।', true); setMealImportProgress(100, 'OCR ব্যর্থ');
-      }
-    }
-
-    function confirmMealImport() {
-      const rows = window.mealImportState.rows || [];
-      const mData = getCurrentMonthData();
-      let added = 0, skipped = 0;
-      rows.forEach(r => {
-        if (r.status !== 'ready' || !r.memberId || !r.date) { skipped++; return; }
-        if (!mData.meals[r.date]) mData.meals[r.date] = {};
-        const old = mData.meals[r.date][r.memberId];
-        if (old) { skipped++; return; }
-        mData.meals[r.date][r.memberId] = r.totalMode ? { bf: 0, ln: 0, dn: 0, total: Number(r.total || 0) } : { bf: r.bf || 0, ln: r.ln || 0, dn: r.dn || 0 };
-        added++;
-      });
-      if (!added) { showToast('নতুন কোনো matched meal পাওয়া যায়নি', true); return; }
-      persistData();
-      cancelMealImport();
-      loadMealEntryForDate();
-      renderMonthlyMealChart();
-      showToast(`${added}টি meal row হিসাবের মধ্যে যোগ হয়েছে${skipped ? `, ${skipped}টি বাদ গেছে` : ''}`);
-    }
-
     function cancelMealImport() {
       window.mealImportState = { rows: [], source: '', fileName: '' };
       const box = document.getElementById('meal-import-preview');
@@ -3682,7 +2968,6 @@
       const f = document.getElementById('meal-import-file'); if (f) f.value = '';
     }
 
-    /* BLANK MEAL SHEET PRINT */
     function renderMealSheetMemberPicker() {
       const box = document.getElementById('meal-sheet-member-list');
       if (!box) return;
@@ -3740,7 +3025,6 @@
       setTimeout(() => window.print(), 100);
     }
 
-    /* MEMBERS MANAGEMENT */
     renderMealSheetMemberPicker();
 
     function handleMemberAdd(event) {
@@ -3795,7 +3079,6 @@
       showToast("মেস ম্যানেজার তথ্য ও হোয়াটসঅ্যাপ সেটিংস সংরক্ষিত হয়েছে!");
     }
 
-    // Seniority ordering: smaller serial = higher seniority. Members without a serial stay after numbered members.
     function getSortedMembers() {
       const members = Array.isArray(window.appData.members) ? window.appData.members.slice() : [];
       return members.sort((a, b) => {
@@ -3876,14 +3159,28 @@
     }
 
     function triggerPDFPrint() {
-      // Always rebuild both printable tables immediately before opening the browser print dialog.
       renderMonthlyMealChart();
       renderAllViews();
+      const filterActiveOnly = document.getElementById('print-filter-active-only')?.checked || false;
+      const printRows = document.querySelectorAll('#print-summary-tbody tr');
+      printRows.forEach(row => {
+        if (filterActiveOnly) {
+          if (row.dataset.hasData === "false") {
+            row.style.display = 'none';
+          } else {
+            row.style.display = '';
+          }
+        } else {
+          row.style.display = '';
+        }
+      });
+
       const paper = document.getElementById('final-print-paper')?.value || 'a4';
       document.body.classList.remove('final-print-a4', 'final-print-legal');
       document.body.classList.add(paper === 'legal' ? 'final-print-legal' : 'final-print-a4');
       const cleanup = () => {
         document.body.classList.remove('final-print-a4', 'final-print-legal');
+        printRows.forEach(row => row.style.display = '');
         window.removeEventListener('afterprint', cleanup);
       };
       window.addEventListener('afterprint', cleanup);
@@ -3891,606 +3188,501 @@
     }
   </script>
 
-<script>
-/* ===== FINAL MONTHLY MEMBER × DATE MEAL MATRIX IMPORT/EXPORT =====
-   This block intentionally overrides only the Excel/CSV template + import UI.
-   Existing Apps Script/backend code is untouched.
-*/
-(function () {
-  const WEEKDAYS_BN = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+  <script>
+    (function () {
+      const WEEKDAYS_BN = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
 
-  function mmText(v) {
-    return String(v ?? '')
-      .replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d))
-      .replace(/[\u200B-\u200D\uFEFF]/g, '')
-      .trim();
-  }
+      function mmText(v) {
+        return String(v ?? '')
+          .replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d))
+          .replace(/[\u200B-\u200D\uFEFF]/g, '')
+          .trim();
+      }
 
-  function mmNorm(v) {
-    return mmText(v).toLowerCase()
-      .replace(/[ঃ:.,()\[\]{}"'`]/g, ' ')
-      .replace(/[\-_\/]+/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
+      function mmNorm(v) {
+        return mmText(v).toLowerCase()
+          .replace(/[ঃ:.,()\[\]{}"'`]/g, ' ')
+          .replace(/[\-_\/]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
 
-  function mmNum(v) {
-    if (v === null || v === undefined || String(v).trim() === '') return null;
-    const s = mmText(v).replace(/,/g, '.');
-    const n = Number(s.replace(/[^0-9.\-]/g, ''));
-    return Number.isFinite(n) ? n : null;
-  }
+      function mmNum(v) {
+        if (v === null || v === undefined || String(v).trim() === '') return null;
+        const s = mmText(v).replace(/,/g, '.');
+        const n = Number(s.replace(/[^0-9.\-]/g, ''));
+        return Number.isFinite(n) ? n : null;
+      }
 
-  function mmDateParts() {
-    const m = String(window.appData?.activeMonth || '').match(/^(\d{4})-(\d{2})$/);
-    const year = m ? Number(m[1]) : new Date().getFullYear();
-    const month = m ? Number(m[2]) : new Date().getMonth() + 1;
-    const days = new Date(year, month, 0).getDate();
-    const monthLabel = document.getElementById('month-selector-label')?.innerText || `${year}-${String(month).padStart(2,'0')}`;
-    return { year, month, days, monthLabel };
-  }
+      function mmDateParts() {
+        const m = String(window.appData?.activeMonth || '').match(/^(\d{4})-(\d{2})$/);
+        const year = m ? Number(m[1]) : new Date().getFullYear();
+        const month = m ? Number(m[2]) : new Date().getMonth() + 1;
+        const days = new Date(year, month, 0).getDate();
+        const monthLabel = document.getElementById('month-selector-label')?.innerText || `${year}-${String(month).padStart(2,'0')}`;
+        return { year, month, days, monthLabel };
+      }
 
-  function mmMembers() {
-    return Array.isArray(window.appData?.members) ? window.appData.members.slice() : [];
-  }
+      function mmMembers() {
+        return Array.isArray(window.appData?.members) ? window.appData.members.slice() : [];
+      }
 
-  function mmFindMember(name) {
-    const q = mmNorm(name);
-    if (!q) return null;
-    const members = mmMembers();
-    let hit = members.find(m => mmNorm(m.name) === q);
-    if (hit) return hit;
-    const compact = q.replace(/\s+/g, '');
-    const candidates = members.filter(m => {
-      const n = mmNorm(m.name).replace(/\s+/g, '');
-      return n === compact || (compact.length >= 4 && (n.includes(compact) || compact.includes(n)));
-    });
-    return candidates.length === 1 ? candidates[0] : null;
-  }
+      function mmFindMember(name) {
+        const q = mmNorm(name);
+        if (!q) return null;
+        const members = mmMembers();
+        let hit = members.find(m => mmNorm(m.name) === q);
+        if (hit) return hit;
+        const compact = q.replace(/\s+/g, '');
+        const candidates = members.filter(m => {
+          const n = mmNorm(m.name).replace(/\s+/g, '');
+          return n === compact || (compact.length >= 4 && (n.includes(compact) || compact.includes(n)));
+        });
+        return candidates.length === 1 ? candidates[0] : null;
+      }
 
-  function mmDay(value, year, month) {
-    const s = mmText(value);
-    if (!s) return null;
-    let m = s.match(/^(\d{1,2})(?:\.0+)?$/);
-    if (m) {
-      const d = Number(m[1]);
-      return d >= 1 && d <= 31 ? d : null;
-    }
-    if (value instanceof Date && !isNaN(value)) {
-      if (value.getFullYear() === year && value.getMonth() + 1 === month) return value.getDate();
-    }
-    // Accept common date headers such as 2026-10-01, 01/10/2026, etc.
-    m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
-    if (m && Number(m[1]) === year && Number(m[2]) === month) return Number(m[3]);
-    m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/);
-    if (m && Number(m[3]) === year && Number(m[2]) === month) return Number(m[1]);
-    return null;
-  }
+      function mmDay(value, year, month) {
+        const s = mmText(value);
+        if (!s) return null;
+        let m = s.match(/^(\d{1,2})(?:\.0+)?$/);
+        if (m) {
+          const d = Number(m[1]);
+          return d >= 1 && d <= 31 ? d : null;
+        }
+        if (value instanceof Date && !isNaN(value)) {
+          if (value.getFullYear() === year && value.getMonth() + 1 === month) return value.getDate();
+        }
+        m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+        if (m && Number(m[1]) === year && Number(m[2]) === month) return Number(m[3]);
+        m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/);
+        if (m && Number(m[3]) === year && Number(m[2]) === month) return Number(m[1]);
+        return null;
+      }
 
-  function mmWeekdayRow(row) {
-    const first = mmNorm(row?.[0] || '');
-    if (first === 'বার' || first === 'day' || first === 'weekday') return true;
-    const vals = (row || []).slice(1, 8).map(mmNorm);
-    return vals.filter(v => /^(রবিবার|সোমবার|মঙ্গলবার|বুধবার|বৃহস্পতিবার|শুক্রবার|শনিবার|sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/.test(v)).length >= 2;
-  }
+      function mmWeekdayRow(row) {
+        const first = mmNorm(row?.[0] || '');
+        if (first === 'বার' || first === 'day' || first === 'weekday') return true;
+        const vals = (row || []).slice(1, 8).map(mmNorm);
+        return vals.filter(v => /^(রবিবার|সোমবার|মঙ্গলবার|বুধবার|বৃহস্পতিবার|শুক্রবার|শনিবার|sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/.test(v)).length >= 2;
+      }
 
-  function mmLooksLikeMatrixHeader(row, year, month, days) {
-    if (!Array.isArray(row) || row.length < 4) return null;
-    const map = [];
-    for (let c = 1; c < row.length; c++) {
-      const d = mmDay(row[c], year, month);
-      if (d && d <= days && !map.some(x => x.day === d)) map.push({ day: d, idx: c });
-    }
-    if (map.length < Math.min(7, days)) return null;
-    let sequential = 0, best = 0, prev = null;
-    map.sort((a,b) => a.idx - b.idx).forEach(x => {
-      if (prev !== null && x.day === prev + 1) sequential++;
-      else sequential = 1;
-      best = Math.max(best, sequential);
-      prev = x.day;
-    });
-    const first = mmNorm(row[0]);
-    const named = /^(মেস মেম্বারের নাম|মেম্বারের নাম|মেস সদস্যের নাম|member|member name|name|সদস্য|নাম)$/.test(first);
-    const score = map.length * 10 + best * 3 + (named ? 100 : 0) + (map.some(x => x.day === 1) ? 30 : 0);
-    return { score, map };
-  }
-
-  function mmDetectMatrix(rawRows) {
-    const { year, month, days } = mmDateParts();
-    let best = null;
-
-    const limit = Math.min(rawRows.length, 20);
-    for (let ri = 0; ri < limit; ri++) {
-      const candidate = mmLooksLikeMatrixHeader(rawRows[ri], year, month, days);
-      if (!candidate) continue;
-      if (!best || candidate.score > best.score) best = { headerIndex: ri, ...candidate };
-    }
-
-    // Strong fallback for a generated sheet whose date row was changed slightly:
-    // first column is the member-name column and columns 2..N are day numbers.
-    if (!best) {
-      for (let ri = 0; ri < limit; ri++) {
-        const row = rawRows[ri];
-        if (!Array.isArray(row) || row.length < Math.min(days + 1, 8)) continue;
-        const dayCells = [];
+      function mmLooksLikeMatrixHeader(row, year, month, days) {
+        if (!Array.isArray(row) || row.length < 4) return null;
+        const map = [];
         for (let c = 1; c < row.length; c++) {
           const d = mmDay(row[c], year, month);
-          if (d && d <= days) dayCells.push({ day: d, idx: c });
+          if (d && d <= days && !map.some(x => x.day === d)) map.push({ day: d, idx: c });
         }
-        if (dayCells.length >= Math.min(7, days)) {
-          best = { headerIndex: ri, map: dayCells.sort((a,b)=>a.idx-b.idx), score: dayCells.length };
-          break;
-        }
-      }
-    }
-
-    return best ? { ...best, year, month, days } : null;
-  }
-
-  function mmIsJunkName(name) {
-    const n = mmNorm(name);
-    return !n ||
-      /^(বার|day|weekday|মোট|total|grand total|নির্দেশনা|instruction|তারিখ|date)$/.test(n) ||
-      /^(মেস মেম্বারের নাম|মেম্বারের নাম|member|member name|name|সদস্য|নাম)$/.test(n);
-  }
-
-  function mmRowsFromMatrix(rawRows, sourceName) {
-    const detected = mmDetectMatrix(rawRows);
-    if (!detected) return null;
-
-    const { headerIndex, map, year, month, days } = detected;
-    const rowsOut = [];
-
-    for (let ri = headerIndex + 1; ri < rawRows.length; ri++) {
-      const r = rawRows[ri];
-      if (!Array.isArray(r)) continue;
-      const rawName = mmText(r[0]);
-      if (mmIsJunkName(rawName) || mmWeekdayRow(r)) continue;
-
-      // If this is a footer row, do not interpret it as a member.
-      if (/^(নোট|note|নির্দেশনা|instruction|মোট|total|grand total)/i.test(mmNorm(rawName))) continue;
-
-      // A matrix row must either match an existing app member or at least look like a person name.
-      const member = mmFindMember(rawName);
-      const hasAnyValue = map.some(({idx}) => String(r[idx] ?? '').trim() !== '');
-      if (!hasAnyValue) continue;
-
-      map.forEach(({day, idx}) => {
-        if (day > days) return;
-        const rawValue = r[idx];
-        if (rawValue === null || rawValue === undefined || String(rawValue).trim() === '') return;
-        const total = mmNum(rawValue);
-        if (total === null || total < 0) return;
-
-        const date = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-        const existing = member && getCurrentMonthData().meals[date]?.[member.id];
-
-        rowsOut.push({
-          id: `matrix_${Date.now()}_${ri}_${day}`,
-          source: sourceName || 'মাসভিত্তিক Meal Matrix',
-          date,
-          rawName,
-          officerName: rawName,
-          attribute: '',
-          bf: 0, ln: 0, dn: 0,
-          total,
-          totalMode: true,
-          importMode: 'matrix',
-          memberId: member?.id || '',
-          memberName: member?.name || '',
-          status: !member ? 'unmatched' : existing ? 'duplicate' : 'ready'
+        if (map.length < Math.min(7, days)) return null;
+        let sequential = 0, best = 0, prev = null;
+        map.sort((a,b) => a.idx - b.idx).forEach(x => {
+          if (prev !== null && x.day === prev + 1) sequential++;
+          else sequential = 1;
+          best = Math.max(best, sequential);
+          prev = x.day;
         });
-      });
-    }
-
-    return rowsOut;
-  }
-
-  // Keep this function intentionally matrix-first. If the file looks like the
-  // app's monthly matrix, NEVER fall through to the old Breakfast/Lunch/Dinner parser.
-  window.rowsFromSheet = function(rawRows, sourceName) {
-    if (!Array.isArray(rawRows) || !rawRows.length) return [];
-
-    const matrixRows = mmRowsFromMatrix(rawRows, sourceName);
-    if (matrixRows !== null) return matrixRows;
-
-    // Compatibility for external Date + Name + Total CSV/XLSX.
-    const normHeader = v => mmNorm(v);
-    const aliases = {
-      date: ['তারিখ','date','meal date','date of meal'],
-      name: ['মেস মেম্বারের নাম','মেম্বারের নাম','member name','member','name','সদস্য','নাম','medical officer','medical officer name','officer'],
-      total: ['মোট মিল','মোট','total meal','total meals','meal total','meal count','total'],
-      attribute: ['অ্যাট্রিবিউট','attribute','attributes','category','type','ধরন','বৈশিষ্ট্য']
-    };
-    const find = (headers, arr) => headers.findIndex(h => arr.some(a => normHeader(h) === normHeader(a) || normHeader(h).includes(normHeader(a))));
-
-    let hi = -1, headers = [], score = -1;
-    rawRows.slice(0, 20).forEach((row, i) => {
-      if (!Array.isArray(row)) return;
-      const cells = row.map(v => mmText(v));
-      const s = (find(cells, aliases.date) >= 0 ? 3 : 0) +
-                (find(cells, aliases.name) >= 0 ? 3 : 0) +
-                (find(cells, aliases.total) >= 0 ? 3 : 0);
-      if (s > score && s >= 6) { score = s; hi = i; headers = cells; }
-    });
-
-    if (hi >= 0) {
-      const di = find(headers, aliases.date);
-      const ni = find(headers, aliases.name);
-      const ti = find(headers, aliases.total);
-      const ai = find(headers, aliases.attribute);
-      if (di >= 0 && ni >= 0 && ti >= 0) {
-        return rawRows.slice(hi + 1).map((r, i) => {
-          const rawName = mmText(r[ni]);
-          const date = parseImportDate(r[di]);
-          const total = mmNum(r[ti]);
-          if (!rawName && !date) return null;
-          return {
-            id: `total_${Date.now()}_${i}`,
-            source: sourceName || 'Excel/CSV',
-            date, rawName,
-            officerName: rawName,
-            attribute: ai >= 0 ? mmText(r[ai]) : '',
-            bf: 0, ln: 0, dn: 0,
-            total: total === null ? 0 : total,
-            totalMode: true,
-            importMode: 'total-row',
-            memberId: '', memberName: '', status: 'unmatched'
-          };
-        }).filter(Boolean);
-      }
-    }
-
-    // Headerless Date | Name | Total compatibility.
-    const headerless = rawRows.filter(r => Array.isArray(r) && r.length >= 3);
-    if (headerless.length) {
-      const looks = headerless.every(r => parseImportDate(r[0]) && mmText(r[1]) && mmNum(r[2]) !== null);
-      if (looks) {
-        return headerless.map((r, i) => ({
-          id: `total_${Date.now()}_${i}`,
-          source: sourceName || 'Excel/CSV',
-          date: parseImportDate(r[0]),
-          rawName: mmText(r[1]),
-          officerName: mmText(r[1]),
-          attribute: '',
-          bf: 0, ln: 0, dn: 0,
-          total: mmNum(r[2]),
-          totalMode: true,
-          importMode: 'total-row',
-          memberId: '', memberName: '', status: 'unmatched'
-        }));
-      }
-    }
-
-    // IMPORTANT: do not revive the old Breakfast/Lunch/Dinner importer.
-    return [];
-  };
-
-  // Decide whether an imported cell is genuinely new, an exact re-import,
-  // or a correction to an existing meal value.  The unique key is
-  // member + date; the total is the value that may be corrected.
-  function mmRefreshImportStatus(r) {
-    const member = mmFindMember(r.rawName || r.officerName || r.memberName || '');
-    r.memberId = member ? member.id : '';
-    r.memberName = member ? member.name : '';
-    if (!r.date || !r.rawName) { r.status = 'invalid'; return r; }
-    if (!member) { r.status = 'unmatched'; return r; }
-
-    const existing = getCurrentMonthData().meals[r.date]?.[member.id];
-    if (!existing) {
-      r.status = 'ready';
-      return r;
-    }
-
-    const oldTotal = mmNum(existing.total);
-    const newTotal = mmNum(r.total);
-    if (oldTotal !== null && newTotal !== null && Math.abs(oldTotal - newTotal) < 0.000001) {
-      r.status = 'unchanged';
-    } else {
-      r.status = 'update';
-    }
-    return r;
-  }
-
-  window.prepareMealImportRows = function(rows, sourceName) {
-    const prepared = (rows || []).map(r => mmRefreshImportStatus(r));
-    window.mealImportState = { rows: prepared, source: sourceName || '', fileName: sourceName || '' };
-    window.renderMealImportPreview();
-  };
-
-  window.renderMealImportPreview = function() {
-    const state = window.mealImportState || { rows: [] };
-    const box = document.getElementById('meal-import-preview');
-    const body = document.getElementById('meal-import-preview-body');
-    const summary = document.getElementById('meal-import-summary');
-    const unmatched = document.getElementById('meal-import-unmatched');
-    const status = document.getElementById('meal-import-status');
-    const table = body?.closest('table');
-    if (!box || !body) return;
-
-    box.classList.remove('hidden');
-    body.innerHTML = '';
-
-    const ready = state.rows.filter(r => r.status === 'ready').length;
-    const updates = state.rows.filter(r => r.status === 'update').length;
-    const unchanged = state.rows.filter(r => r.status === 'unchanged').length;
-    const bad = state.rows.filter(r => r.status === 'unmatched' || r.status === 'invalid');
-
-    summary.innerText = `${state.rows.length}টি পূরণ করা মিল • ${ready}টি নতুন • ${updates}টি আপডেট হবে • ${unchanged}টি একই আছে • ${bad.length}টি যাচাই দরকার`;
-    status.innerText = `${state.fileName || 'Excel/CSV'} • মোট মিলের Matrix Preview`;
-
-    if (table) {
-      let thead = table.querySelector('thead');
-      if (!thead) {
-        thead = document.createElement('thead');
-        table.insertBefore(thead, table.firstChild);
-      }
-      thead.className = 'sticky top-0 bg-white shadow-sm';
-      thead.innerHTML = `<tr>
-        <th class="p-2 border-b text-left">তারিখ</th>
-        <th class="p-2 border-b text-left">মেস মেম্বার</th>
-        <th class="p-2 border-b text-center">মোট মিল</th>
-        <th class="p-2 border-b text-center">ম্যাচ/এডিট</th>
-        <th class="p-2 border-b text-center">অবস্থা</th>
-      </tr>`;
-    }
-
-    if (unmatched) {
-      if (bad.length) {
-        unmatched.classList.remove('hidden');
-        unmatched.innerHTML = `<strong>যাচাই দরকার:</strong> ${bad.map(r =>
-          `${escapeMealImportHtml(r.rawName || '(নাম নেই)')} — ${escapeMealImportHtml(r.date || '(তারিখ নেই)')}`
-        ).join(' • ')}`;
-      } else {
-        unmatched.classList.add('hidden');
-        unmatched.innerHTML = '';
-      }
-    }
-
-    state.rows.forEach((r, i) => {
-      const tr = document.createElement('tr');
-      tr.className = r.status === 'ready'
-        ? 'meal-import-row-ready'
-        : (r.status === 'update' || r.status === 'unchanged')
-          ? 'meal-import-row-duplicate'
-          : 'meal-import-row-unmatched';
-
-      const label = r.status === 'ready' ? 'নতুন যোগ হবে'
-        : r.status === 'update' ? 'সংশোধন → আপডেট হবে'
-        : r.status === 'unchanged' ? 'আগের মতোই — পরিবর্তন নেই'
-        : r.status === 'invalid' ? 'অসম্পূর্ণ'
-        : 'নাম মেলেনি';
-
-      tr.innerHTML = `
-        <td class="p-2 border-b whitespace-nowrap">${escapeMealImportHtml(r.date || '-')}</td>
-        <td class="p-2 border-b">
-          <input class="w-full min-w-[180px] border rounded-lg px-2 py-1 bg-white"
-            value="${escapeMealImportHtml(r.rawName || '')}"
-            onchange="rematchMealImportRow(${i}, this.value)">
-        </td>
-        <td class="p-2 border-b text-center">
-          <input type="number" step="0.5" min="0"
-            class="w-24 border rounded-lg px-2 py-1 text-center font-bold bg-white"
-            value="${r.total ?? ''}"
-            onchange="editMealImportValue(${i}, 'total', this.value)">
-        </td>
-        <td class="p-2 border-b text-center">
-          <span class="px-2 py-1 rounded-full bg-white border">${escapeMealImportHtml(r.memberName || 'নাম মেলেনি')}</span>
-        </td>
-        <td class="p-2 border-b text-center">
-          <span class="px-2 py-1 rounded-full bg-white border">${label}</span>
-        </td>`;
-      body.appendChild(tr);
-    });
-
-    const confirmBtn = document.getElementById('meal-import-confirm-btn');
-    if (confirmBtn) confirmBtn.disabled = (ready + updates) === 0;
-  };
-
-  window.editMealImportValue = function(index, field, value) {
-    const r = window.mealImportState?.rows?.[index];
-    if (!r || field !== 'total') return;
-    const n = mmNum(value);
-    r.totalMode = true;
-    r.importMode = 'matrix';
-    r.total = n === null ? 0 : n;
-    r.bf = r.ln = r.dn = 0;
-    const member = mmFindMember(r.rawName);
-    r.memberId = member ? member.id : '';
-    r.memberName = member ? member.name : '';
-    mmRefreshImportStatus(r);
-    window.renderMealImportPreview();
-  };
-
-  window.rematchMealImportRow = function(index, name) {
-    const r = window.mealImportState?.rows?.[index];
-    if (!r) return;
-    r.rawName = mmText(name);
-    r.officerName = r.rawName;
-    const member = mmFindMember(r.rawName);
-    r.memberId = member ? member.id : '';
-    r.memberName = member ? member.name : '';
-    mmRefreshImportStatus(r);
-    window.renderMealImportPreview();
-  };
-
-  window.downloadMealCSVTemplate = function() {
-    try {
-      const { year, month, days } = mmDateParts();
-      const members = mmMembers();
-      if (!members.length) {
-        showToast('কোনো মেস মেম্বার পাওয়া যায়নি', true);
-        return;
+        const first = mmNorm(row[0]);
+        const named = /^(মেস মেম্বারের নাম|মেম্বারের নাম|মেস সদস্যের নাম|member|member name|name|সদস্য|নাম)$/.test(first);
+        const score = map.length * 10 + best * 3 + (named ? 100 : 0) + (map.some(x => x.day === 1) ? 30 : 0);
+        return { score, map };
       }
 
-      const rows = [
-        ['মেস মেম্বারের নাম', ...Array.from({length: days}, (_, i) => i + 1)],
-        ['বার', ...Array.from({length: days}, (_, i) => WEEKDAYS_BN[new Date(year, month - 1, i + 1).getDay()])]
-      ];
+      function mmDetectMatrix(rawRows) {
+        const { year, month, days } = mmDateParts();
+        let best = null;
 
-      members.forEach(m => {
-        const name = mmText(m.name);
-        if (name) rows.push([name, ...Array(days).fill('')]);
-      });
+        const limit = Math.min(rawRows.length, 20);
+        for (let ri = 0; ri < limit; ri++) {
+          const candidate = mmLooksLikeMatrixHeader(rawRows[ri], year, month, days);
+          if (!candidate) continue;
+          if (!best || candidate.score > best.score) best = { headerIndex: ri, ...candidate };
+        }
 
-      const csv = rows.map(row => row.map(v => {
-        const s = String(v ?? '');
-        return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-      }).join(',')).join('\r\n');
+        if (!best) {
+          for (let ri = 0; ri < limit; ri++) {
+            const row = rawRows[ri];
+            if (!Array.isArray(row) || row.length < Math.min(days + 1, 8)) continue;
+            const dayCells = [];
+            for (let c = 1; c < row.length; c++) {
+              const d = mmDay(row[c], year, month);
+              if (d && d <= days) dayCells.push({ day: d, idx: c });
+            }
+            if (dayCells.length >= Math.min(7, days)) {
+              best = { headerIndex: ri, map: dayCells.sort((a,b)=>a.idx-b.idx), score: dayCells.length };
+              break;
+            }
+          }
+        }
 
-      const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `meal-sheet-${year}-${String(month).padStart(2,'0')}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      showToast('মেস মেম্বার × তারিখ CSV Template ডাউনলোড হয়েছে');
-    } catch (e) {
-      console.error(e);
-      showToast('CSV Template তৈরি করতে সমস্যা হয়েছে', true);
-    }
-  };
-
-  window.downloadMealExcelTemplate = async function() {
-    try {
-      const { year, month, days, monthLabel } = mmDateParts();
-      const members = mmMembers();
-      if (!members.length) {
-        showToast('কোনো মেস মেম্বার পাওয়া যায়নি', true);
-        return;
+        return best ? { ...best, year, month, days } : null;
       }
 
-      const rows = [
-        ['মেস মেম্বারের নাম', ...Array.from({length: days}, (_, i) => i + 1)],
-        ['বার', ...Array.from({length: days}, (_, i) => WEEKDAYS_BN[new Date(year, month - 1, i + 1).getDay()])]
-      ];
-      members.forEach(m => {
-        const name = mmText(m.name);
-        if (name) rows.push([name, ...Array(days).fill('')]);
-      });
-
-      // XLSX library is already part of the app and is enough for a reliable template.
-      const ws = XLSX.utils.aoa_to_sheet(rows);
-      ws['!cols'] = [{wch: 28}, ...Array.from({length: days}, () => ({wch: 11}))];
-      ws['!freeze'] = {xSplit: 1, ySplit: 2};
-
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Meal Sheet');
-      XLSX.writeFile(wb, `meal-sheet-${year}-${String(month).padStart(2,'0')}.xlsx`);
-      showToast('মেস মেম্বার × তারিখ Excel Template ডাউনলোড হয়েছে');
-    } catch (e) {
-      console.error(e);
-      showToast('Excel Template তৈরি করতে সমস্যা হয়েছে', true);
-    }
-  };
-
-  window.handleMealFileImport = async function(file) {
-    if (!file) return;
-    try {
-      setMealImportProgress(10, 'Excel/CSV পড়া হচ্ছে...');
-      const data = await file.arrayBuffer();
-      const wb = XLSX.read(data, {type: 'array', cellDates: true, raw: true});
-      const sheet = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: '', raw: true});
-      setMealImportProgress(70, 'মেস মেম্বার × তারিখ Matrix খোঁজা হচ্ছে...');
-
-      const parsed = window.rowsFromSheet(rows, file.name);
-      if (!parsed.length) {
-        window.prepareMealImportRows([], file.name);
-        setMealImportProgress(100, 'কোনো পূরণ করা মিল পাওয়া যায়নি');
-        showToast('এই ফাইলে মেস মেম্বার × তারিখের Matrix বা Date/Name/Total format পাওয়া যায়নি।', true);
-        return;
+      function mmIsJunkName(name) {
+        const n = mmNorm(name);
+        return !n ||
+          /^(বার|day|weekday|মোট|total|grand total|নির্দেশনা|instruction|তারিখ|date)$/.test(n) ||
+          /^(মেস মেম্বারের নাম|মেম্বারের নাম|member|member name|name|সদস্য|নাম)$/.test(n);
       }
 
-      window.prepareMealImportRows(parsed, file.name);
-      setMealImportProgress(100, 'মোট মিলের Preview প্রস্তুত');
-    } catch (e) {
-      console.error(e);
-      showToast('Excel/CSV পড়তে সমস্যা হয়েছে', true);
-      setMealImportProgress(100, 'Import ব্যর্থ');
-    }
-  };
+      function mmRowsFromMatrix(rawRows, sourceName) {
+        const detected = mmDetectMatrix(rawRows);
+        if (!detected) return null;
 
-  // Confirm stays compatible with the app's existing storage model:
-  // matrix imports always become {bf:0, ln:0, dn:0, total:<value>}.
-  window.confirmMealImport = function() {
-    const rows = window.mealImportState?.rows || [];
-    const mData = getCurrentMonthData();
-    let added = 0, updated = 0, unchanged = 0, skipped = 0;
+        const { headerIndex, map, year, month, days } = detected;
+        const rowsOut = [];
 
-    rows.forEach(r => {
-      if (!['ready', 'update', 'unchanged'].includes(r.status) || !r.memberId || !r.date) {
-        skipped++;
-        return;
+        for (let ri = headerIndex + 1; ri < rawRows.length; ri++) {
+          const r = rawRows[ri];
+          if (!Array.isArray(r)) continue;
+          const rawName = mmText(r[0]);
+          if (mmIsJunkName(rawName) || mmWeekdayRow(r)) continue;
+
+          if (/^(নোট|note|নির্দেশনা|instruction|মোট|total|grand total)/i.test(mmNorm(rawName))) continue;
+
+          const member = mmFindMember(rawName);
+          const hasAnyValue = map.some(({idx}) => String(r[idx] ?? '').trim() !== '');
+          if (!hasAnyValue) continue;
+
+          map.forEach(({day, idx}) => {
+            if (day > days) return;
+            const rawValue = r[idx];
+            if (rawValue === null || rawValue === undefined || String(rawValue).trim() === '') return;
+            const total = mmNum(rawValue);
+            if (total === null || total < 0) return;
+
+            const date = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            const existing = member && getCurrentMonthData().meals[date]?.[member.id];
+
+            rowsOut.push({
+              id: `matrix_${Date.now()}_${ri}_${day}`,
+              source: sourceName || 'মাসভিত্তিক Meal Matrix',
+              date,
+              rawName,
+              officerName: rawName,
+              attribute: '',
+              bf: 0, ln: 0, dn: 0,
+              total,
+              totalMode: true,
+              importMode: 'matrix',
+              memberId: member?.id || '',
+              memberName: member?.name || '',
+              status: !member ? 'unmatched' : existing ? 'duplicate' : 'ready'
+            });
+          });
+        }
+
+        return rowsOut;
       }
-      if (!mData.meals[r.date]) mData.meals[r.date] = {};
 
-      const existing = mData.meals[r.date][r.memberId];
-      const newTotal = Number(r.total || 0);
+      window.rowsFromSheet = function(rawRows, sourceName) {
+        if (!Array.isArray(rawRows) || !rawRows.length) return [];
 
-      // Exact re-import: do nothing.
-      if (r.status === 'unchanged') {
-        unchanged++;
-        return;
+        const matrixRows = mmRowsFromMatrix(rawRows, sourceName);
+        if (matrixRows !== null) return matrixRows;
+
+        return [];
+      };
+
+      function mmRefreshImportStatus(r) {
+        const member = mmFindMember(r.rawName || r.officerName || r.memberName || '');
+        r.memberId = member ? member.id : '';
+        r.memberName = member ? member.name : '';
+        if (!r.date || !r.rawName) { r.status = 'invalid'; return r; }
+        if (!member) { r.status = 'unmatched'; return r; }
+
+        const existing = getCurrentMonthData().meals[r.date]?.[member.id];
+        if (!existing) {
+          r.status = 'ready';
+          return r;
+        }
+
+        const oldTotal = mmNum(existing.total);
+        const newTotal = mmNum(r.total);
+        if (oldTotal !== null && newTotal !== null && Math.abs(oldTotal - newTotal) < 0.000001) {
+          r.status = 'unchanged';
+        } else {
+          r.status = 'update';
+        }
+        return r;
       }
 
-      // New row: create it. Correction: replace only the total value while
-      // keeping the existing meal record structure intact.
-      if (!existing) {
-        mData.meals[r.date][r.memberId] = {
-          bf: 0,
-          ln: 0,
-          dn: 0,
-          total: newTotal
-        };
-        added++;
-      } else {
-        existing.total = newTotal;
-        // Imported matrix data intentionally represents total meal only.
-        // Resetting the three legacy slots would destroy manual entries, so
-        // keep bf/ln/dn exactly as they were and update only total.
-        updated++;
+      window.prepareMealImportRows = function(rows, sourceName) {
+        const prepared = (rows || []).map(r => mmRefreshImportStatus(r));
+        window.mealImportState = { rows: prepared, source: sourceName || '', fileName: sourceName || '' };
+        window.renderMealImportPreview();
+      };
+
+      window.renderMealImportPreview = function() {
+        const state = window.mealImportState || { rows: [] };
+        const box = document.getElementById('meal-import-preview');
+        const body = document.getElementById('meal-import-preview-body');
+        const summary = document.getElementById('meal-import-summary');
+        const unmatched = document.getElementById('meal-import-unmatched');
+        const status = document.getElementById('meal-import-status');
+        const table = body?.closest('table');
+        if (!box || !body) return;
+
+        box.classList.remove('hidden');
+        body.innerHTML = '';
+
+        const ready = state.rows.filter(r => r.status === 'ready').length;
+        const updates = state.rows.filter(r => r.status === 'update').length;
+        const unchanged = state.rows.filter(r => r.status === 'unchanged').length;
+        const bad = state.rows.filter(r => r.status === 'unmatched' || r.status === 'invalid');
+
+        summary.innerText = `${state.rows.length}টি পূরণ করা মিল • ${ready}টি নতুন • ${updates}টি আপডেট হবে • ${unchanged}টি একই আছে • ${bad.length}টি যাচাই দরকার`;
+        status.innerText = `${state.fileName || 'Excel/CSV'} • মোট মিলের Matrix Preview`;
+
+        if (table) {
+          let thead = table.querySelector('thead');
+          if (!thead) {
+            thead = document.createElement('thead');
+            table.insertBefore(thead, table.firstChild);
+          }
+          thead.className = 'sticky top-0 bg-white shadow-sm';
+          thead.innerHTML = `<tr>
+            <th class="p-2 border-b text-left">তারিখ</th>
+            <th class="p-2 border-b text-left">মেস মেম্বার</th>
+            <th class="p-2 border-b text-center">মোট মিল</th>
+            <th class="p-2 border-b text-center">ম্যাচ/এডিট</th>
+            <th class="p-2 border-b text-center">অবস্থা</th>
+          </tr>`;
+        }
+
+        if (unmatched) {
+          if (bad.length) {
+            unmatched.classList.remove('hidden');
+            unmatched.innerHTML = `<strong>যাচাই দরকার:</strong> ${bad.map(r =>
+              `${escapeMealImportHtml(r.rawName || '(নাম নেই)')} — ${escapeMealImportHtml(r.date || '(তারিখ নেই)')}`
+            ).join(' • ')}`;
+          } else {
+            unmatched.classList.add('hidden');
+            unmatched.innerHTML = '';
+          }
+        }
+
+        state.rows.forEach((r, i) => {
+          const tr = document.createElement('tr');
+          tr.className = r.status === 'ready'
+            ? 'meal-import-row-ready'
+            : (r.status === 'update' || r.status === 'unchanged')
+              ? 'meal-import-row-duplicate'
+              : 'meal-import-row-unmatched';
+
+          const label = r.status === 'ready' ? 'নতুন যোগ হবে'
+            : r.status === 'update' ? 'সংশোধন → আপডেট হবে'
+            : r.status === 'unchanged' ? 'আগের মতোই — পরিবর্তন নেই'
+            : r.status === 'invalid' ? 'অসম্পূর্ণ'
+            : 'নাম মেলেনি';
+
+          tr.innerHTML = `
+            <td class="p-2 border-b whitespace-nowrap">${escapeMealImportHtml(r.date || '-')}</td>
+            <td class="p-2 border-b">
+              <input class="w-full min-w-[180px] border rounded-lg px-2 py-1 bg-white"
+                value="${escapeMealImportHtml(r.rawName || '')}"
+                onchange="rematchMealImportRow(${i}, this.value)">
+            </td>
+            <td class="p-2 border-b text-center">
+              <input type="number" step="0.5" min="0"
+                class="w-24 border rounded-lg px-2 py-1 text-center font-bold bg-white"
+                value="${r.total ?? ''}"
+                onchange="editMealImportValue(${i}, 'total', this.value)">
+            </td>
+            <td class="p-2 border-b text-center">
+              <span class="px-2 py-1 rounded-full bg-white border">${escapeMealImportHtml(r.memberName || 'নাম মেলেনি')}</span>
+            </td>
+            <td class="p-2 border-b text-center">
+              <span class="px-2 py-1 rounded-full bg-white border">${label}</span>
+            </td>`;
+          body.appendChild(tr);
+        });
+
+        const confirmBtn = document.getElementById('meal-import-confirm-btn');
+        if (confirmBtn) confirmBtn.disabled = (ready + updates) === 0;
+      };
+
+      window.editMealImportValue = function(index, field, value) {
+        const r = window.mealImportState?.rows?.[index];
+        if (!r || field !== 'total') return;
+        const n = mmNum(value);
+        r.totalMode = true;
+        r.importMode = 'matrix';
+        r.total = n === null ? 0 : n;
+        r.bf = r.ln = r.dn = 0;
+        const member = mmFindMember(r.rawName);
+        r.memberId = member ? member.id : '';
+        r.memberName = member ? member.name : '';
+        mmRefreshImportStatus(r);
+        window.renderMealImportPreview();
+      };
+
+      window.rematchMealImportRow = function(index, name) {
+        const r = window.mealImportState?.rows?.[index];
+        if (!r) return;
+        r.rawName = mmText(name);
+        r.officerName = r.rawName;
+        const member = mmFindMember(r.rawName);
+        r.memberId = member ? member.id : '';
+        r.memberName = member ? member.name : '';
+        mmRefreshImportStatus(r);
+        window.renderMealImportPreview();
+      };
+
+      window.downloadMealCSVTemplate = function() {
+        try {
+          const { year, month, days } = mmDateParts();
+          const members = mmMembers();
+          if (!members.length) {
+            showToast('কোনো মেস মেম্বার পাওয়া যায়নি', true);
+            return;
+          }
+
+          const rows = [
+            ['মেস মেম্বারের নাম', ...Array.from({length: days}, (_, i) => i + 1)],
+            ['বার', ...Array.from({length: days}, (_, i) => WEEKDAYS_BN[new Date(year, month - 1, i + 1).getDay()])]
+          ];
+
+          members.forEach(m => {
+            const name = mmText(m.name);
+            if (name) rows.push([name, ...Array(days).fill('')]);
+          });
+
+          const csv = rows.map(row => row.map(v => {
+            const s = String(v ?? '');
+            return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+          }).join(',')).join('\r\n');
+
+          const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8;'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `meal-sheet-${year}-${String(month).padStart(2,'0')}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          showToast('মেস মেম্বার × তারিখ CSV Template ডাউনলোড হয়েছে');
+        } catch (e) {
+          console.error(e);
+          showToast('CSV Template তৈরি করতে সমস্যা হয়েছে', true);
+        }
+      };
+
+      window.downloadMealExcelTemplate = async function() {
+        try {
+          const { year, month, days, monthLabel } = mmDateParts();
+          const members = mmMembers();
+          if (!members.length) {
+            showToast('কোনো মেস মেম্বার পাওয়া যায়নি', true);
+            return;
+          }
+
+          const rows = [
+            ['মেস মেম্বারের নাম', ...Array.from({length: days}, (_, i) => i + 1)],
+            ['বার', ...Array.from({length: days}, (_, i) => WEEKDAYS_BN[new Date(year, month - 1, i + 1).getDay()])]
+          ];
+          members.forEach(m => {
+            const name = mmText(m.name);
+            if (name) rows.push([name, ...Array(days).fill('')]);
+          });
+
+          const ws = XLSX.utils.aoa_to_sheet(rows);
+          ws['!cols'] = [{wch: 28}, ...Array.from({length: days}, () => ({wch: 11}))];
+          ws['!freeze'] = {xSplit: 1, ySplit: 2};
+
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, 'Meal Sheet');
+          XLSX.writeFile(wb, `meal-sheet-${year}-${String(month).padStart(2,'0')}.xlsx`);
+          showToast('মেস মেম্বার × তারিখ Excel Template ডাউনলোড হয়েছে');
+        } catch (e) {
+          console.error(e);
+          showToast('Excel Template তৈরি করতে সমস্যা হয়েছে', true);
+        }
+      };
+
+      window.handleMealFileImport = async function(file) {
+        if (!file) return;
+        try {
+          setMealImportProgress(10, 'Excel/CSV পড়া হচ্ছে...');
+          const data = await file.arrayBuffer();
+          const wb = XLSX.read(data, {type: 'array', cellDates: true, raw: true});
+          const sheet = wb.Sheets[wb.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: '', raw: true});
+          setMealImportProgress(70, 'মেস মেম্বার × তারিখ Matrix খোঁজা হচ্ছে...');
+
+          const parsed = window.rowsFromSheet(rows, file.name);
+          if (!parsed.length) {
+            window.prepareMealImportRows([], file.name);
+            setMealImportProgress(100, 'কোনো পূরণ করা মিল পাওয়া যায়নি');
+            showToast('এই ফাইলে মেস মেম্বার × তারিখের Matrix ফরম্যাট পাওয়া যায়নি।', true);
+            return;
+          }
+
+          window.prepareMealImportRows(parsed, file.name);
+          setMealImportProgress(100, 'মোট মিলের Preview প্রস্তুত');
+        } catch (e) {
+          console.error(e);
+          showToast('Excel/CSV পড়তে সমস্যা হয়েছে', true);
+          setMealImportProgress(100, 'Import ব্যর্থ');
+        }
+      };
+
+      window.confirmMealImport = function() {
+        const rows = window.mealImportState?.rows || [];
+        const mData = getCurrentMonthData();
+        let added = 0, updated = 0, unchanged = 0, skipped = 0;
+
+        rows.forEach(r => {
+          if (!['ready', 'update', 'unchanged'].includes(r.status) || !r.memberId || !r.date) {
+            skipped++;
+            return;
+          }
+          if (!mData.meals[r.date]) mData.meals[r.date] = {};
+
+          const existing = mData.meals[r.date][r.memberId];
+          const newTotal = Number(r.total || 0);
+
+          if (r.status === 'unchanged') {
+            unchanged++;
+            return;
+          }
+
+          if (!existing) {
+            mData.meals[r.date][r.memberId] = {
+              bf: 0,
+              ln: 0,
+              dn: 0,
+              total: newTotal
+            };
+            added++;
+          } else {
+            existing.total = newTotal;
+            updated++;
+          }
+        });
+
+        if (!added && !updated) {
+          showToast(unchanged ? 'সব মিল আগের ডেটার সঙ্গে একই — কোনো পরিবর্তন দরকার নেই' : 'নতুন কোনো matched meal পাওয়া যায়নি', !unchanged);
+          return;
+        }
+
+        persistData();
+        cancelMealImport();
+        loadMealEntryForDate();
+        renderMonthlyMealChart();
+        const parts = [];
+        if (added) parts.push(`${added}টি নতুন মিল যোগ হয়েছে`);
+        if (updated) parts.push(`${updated}টি সংশোধিত মিল আপডেট হয়েছে`);
+        if (unchanged) parts.push(`${unchanged}টি একই ছিল`);
+        if (skipped) parts.push(`${skipped}টি যাচাই দরকার হওয়ায় বাদ গেছে`);
+        showToast(parts.join(' • '));
+      };
+
+      function escapeMealImportHtml(value) {
+        return String(value ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       }
-    });
-
-    if (!added && !updated) {
-      showToast(unchanged ? 'সব মিল আগের ডেটার সঙ্গে একই — কোনো পরিবর্তন দরকার নেই' : 'নতুন কোনো matched meal পাওয়া যায়নি', !unchanged);
-      return;
-    }
-
-    persistData();
-    cancelMealImport();
-    loadMealEntryForDate();
-    renderMonthlyMealChart();
-    const parts = [];
-    if (added) parts.push(`${added}টি নতুন মিল যোগ হয়েছে`);
-    if (updated) parts.push(`${updated}টি সংশোধিত মিল আপডেট হয়েছে`);
-    if (unchanged) parts.push(`${unchanged}টি একই ছিল`);
-    if (skipped) parts.push(`${skipped}টি যাচাই দরকার হওয়ায় বাদ গেছে`);
-    showToast(parts.join(' • '));
-  };
-
-  // Remove any stale visual state immediately if this override loads after a previous preview.
-  document.addEventListener('DOMContentLoaded', () => {
-    const table = document.querySelector('#meal-import-preview-body')?.closest('table');
-    if (table) {
-      const thead = table.querySelector('thead');
-      if (thead) {
-        thead.innerHTML = `<tr>
-          <th class="p-2 border-b text-left">তারিখ</th>
-          <th class="p-2 border-b text-left">মেস মেম্বার</th>
-          <th class="p-2 border-b text-center">মোট মিল</th>
-          <th class="p-2 border-b text-center">ম্যাচ/এডিট</th>
-          <th class="p-2 border-b text-center">অবস্থা</th>
-        </tr>`;
-      }
-    }
-  });
-})();
-</script>
+    })();
+  </script>
 
 </body>
 </html>
