@@ -240,6 +240,27 @@
       .no-print { display: none !important; }
       html, body { width: 100% !important; min-height: 0 !important; overflow: visible !important; }
       #printable-report-area { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      #printable-report-area table th,
+      #printable-report-area table td {
+        text-align: center !important;
+        vertical-align: middle !important;
+      }
+      /* Final settlement table: fit every column to the printable page width. */
+      .final-summary-print-page .print-settlement-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+      }
+      .final-summary-print-page .print-settlement-table th,
+      .final-summary-print-page .print-settlement-table td {
+        padding: 1.5mm 1mm !important;
+        overflow-wrap: anywhere;
+        word-break: normal;
+        font-size: 8pt;
+      }
+      .final-summary-print-page .print-settlement-table td:last-child {
+        height: 9mm;
+      }
       .print-page {
         break-after: page;
         page-break-after: always;
@@ -1332,17 +1353,23 @@
 
       <div>
         <h3 class="text-sm font-bold border-b border-slate-400 pb-1.5 mb-2.5">মেম্বারদের ফাইনাল জমা ও দেনা-পাওনা</h3>
-        <table class="w-full border-collapse border border-slate-300 text-xs">
+        <table class="w-full border-collapse border border-slate-300 text-xs print-settlement-table">
+          <colgroup>
+            <col style="width:5%"><col style="width:17%"><col style="width:7%">
+            <col style="width:10%"><col style="width:10%"><col style="width:10%">
+            <col style="width:10%"><col style="width:16%"><col style="width:15%">
+          </colgroup>
           <thead>
             <tr class="bg-slate-100 text-slate-800 font-bold">
-              <th class="border border-slate-300 p-2 text-center w-12">ক্রমিক</th>
+              <th class="border border-slate-300 p-2 text-center">ক্রমিক</th>
               <th class="border border-slate-300 p-2 text-left">সদস্যের নাম</th>
               <th class="border border-slate-300 p-2 text-center">মোট মিল</th>
               <th class="border border-slate-300 p-2 text-right">মিল খরচ (৳)</th>
               <th class="border border-slate-300 p-2 text-right">এক্সট্রা বিল (৳)</th>
               <th class="border border-slate-300 p-2 text-right">মোট বিল (৳)</th>
               <th class="border border-slate-300 p-2 text-right">মোট জমা (৳)</th>
-              <th class="border border-slate-300 p-2 text-center">ফাইনাল অবস্থা</th>
+              <th class="border border-slate-300 p-2 text-center">ফাইনাল হিসাব (৳)</th>
+              <th class="border border-slate-300 p-2 text-center">মন্তব্য</th>
             </tr>
           </thead>
           <tbody id="print-summary-tbody"></tbody>
@@ -2435,6 +2462,11 @@
       printTbody.innerHTML = '';
 
       let sumMeals = 0, sumMealCost = 0, sumExtraBill = 0, sumAdj = 0, sumDeposit = 0, sumTotalCost = 0;
+      // Print amounts as whole taka, rounding away from zero so no fractional taka remains.
+      const printWholeTaka = value => {
+        const amount = Number(value) || 0;
+        return amount < 0 ? -Math.ceil(Math.abs(amount)) : Math.ceil(amount);
+      };
 
       getSortedMembers().forEach((member, idx) => {
         const mMeals = memberMealsMap[member.id] || 0;
@@ -2478,15 +2510,21 @@
         printTr.className = "border-b border-slate-300" + (hasZeroData ? " print-row-zero" : "");
         printTr.dataset.hasData = hasZeroData ? "false" : "true";
 
+        const pMealCost = printWholeTaka(mMealCost);
+        const pExtra = printWholeTaka(mExtra);
+        const pTotalBill = printWholeTaka(mMealCost + mExtra);
+        const pDeposit = printWholeTaka(mDeposit);
+        const pFinalNet = printWholeTaka(finalNet);
         printTr.innerHTML = `
-          <td class="p-2 border border-slate-300 text-center font-medium">${(Number.isInteger(Number(member.seniority)) && Number(member.seniority) > 0) ? Number(member.seniority) : (idx + 1)}</td>
-          <td class="p-2 border border-slate-300 text-left font-bold text-slate-800">${member.name}</td>
-          <td class="p-2 border border-slate-300 text-center ${mMeals > 0 ? 'font-bold' : ''}">${mMeals > 0 ? mMeals : ''}</td>
-          <td class="p-2 border border-slate-300 text-right ${mMealCost > 0 ? 'font-bold' : ''}">${mMealCost > 0 ? '৳' + mMealCost.toFixed(1) : ''}</td>
-          <td class="p-2 border border-slate-300 text-right ${mExtra > 0 ? 'font-bold' : ''}">${mExtra > 0 ? '৳' + mExtra : ''}</td>
-          <td class="p-2 border border-slate-300 text-right ${ (mMealCost + mExtra) > 0 ? 'font-bold' : ''}">${ (mMealCost + mExtra) > 0 ? '৳' + (mMealCost + mExtra).toFixed(1) : ''}</td>
-          <td class="p-2 border border-slate-300 text-right ${mDeposit > 0 ? 'font-bold' : ''}">${mDeposit > 0 ? '৳' + mDeposit : ''}</td>
-          <td class="p-2 border border-slate-300 text-center font-bold">${finalNet === 0 ? '' : (finalNet > 0 ? '<span class="text-emerald-700 font-bold">৳' + finalNet.toFixed(1) + ' জমা আছে</span>' : '<span class="text-rose-700 font-bold">৳' + Math.abs(finalNet).toFixed(1) + ' বকেয়া আছে</span>')}</td>
+          <td class="p-2 border border-slate-300 font-medium">${(Number.isInteger(Number(member.seniority)) && Number(member.seniority) > 0) ? Number(member.seniority) : (idx + 1)}</td>
+          <td class="p-2 border border-slate-300 font-bold text-slate-800">${member.name}</td>
+          <td class="p-2 border border-slate-300 ${mMeals > 0 ? 'font-bold' : ''}">${mMeals > 0 ? mMeals : ''}</td>
+          <td class="p-2 border border-slate-300 ${mMealCost > 0 ? 'font-bold' : ''}">${mMealCost > 0 ? pMealCost : ''}</td>
+          <td class="p-2 border border-slate-300 ${mExtra > 0 ? 'font-bold' : ''}">${mExtra > 0 ? pExtra : ''}</td>
+          <td class="p-2 border border-slate-300 ${ (mMealCost + mExtra) > 0 ? 'font-bold' : ''}">${ (mMealCost + mExtra) > 0 ? pTotalBill : ''}</td>
+          <td class="p-2 border border-slate-300 ${mDeposit > 0 ? 'font-bold' : ''}">${mDeposit > 0 ? pDeposit : ''}</td>
+          <td class="p-2 border border-slate-300 font-bold">${finalNet === 0 ? '' : (finalNet > 0 ? '<span class="text-emerald-700 font-bold">' + pFinalNet + ' জমা আছে</span>' : '<span class="text-rose-700 font-bold">' + Math.abs(pFinalNet) + ' বকেয়া আছে</span>')}</td>
+          <td class="p-2 border border-slate-300 print-comment-cell"></td>
         `;
         printTbody.appendChild(printTr);
       });
