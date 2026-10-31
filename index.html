@@ -405,6 +405,76 @@
       background: #f1f5f9;
     }
   </style>
+
+<style id="universal-print-and-meal-rate-style">
+  /* Dashboard meal-rate card: noticeable but restrained motion. */
+  .meal-rate-highlight {
+    position: relative;
+    isolation: isolate;
+    animation: mealRateGlow 2.8s ease-in-out infinite;
+    box-shadow: 0 0 0 1px rgba(16,185,129,.12), 0 5px 18px rgba(16,185,129,.10);
+  }
+  .meal-rate-highlight h3 { animation: mealRateValue 2.8s ease-in-out infinite; }
+  @keyframes mealRateGlow {
+    0%,100% { box-shadow: 0 0 0 1px rgba(16,185,129,.12), 0 5px 18px rgba(16,185,129,.10); }
+    50% { box-shadow: 0 0 0 3px rgba(16,185,129,.17), 0 8px 25px rgba(16,185,129,.22); }
+  }
+  @keyframes mealRateValue { 0%,100% { transform:scale(1); } 50% { transform:scale(1.045); } }
+  @media (prefers-reduced-motion: reduce) { .meal-rate-highlight,.meal-rate-highlight h3 { animation:none!important; } }
+
+  @media print {
+    @page { size: A4 landscape; margin: 6mm; }
+    body.final-print-legal @page { size: legal landscape; }
+    html, body { width:100%!important; height:auto!important; margin:0!important; padding:0!important; overflow:visible!important; background:#fff!important; }
+    body * { visibility:hidden!important; }
+    #printable-report-area, #printable-report-area * { visibility:visible!important; }
+    #printable-report-area {
+      display:block!important; position:absolute!important; inset:0 auto auto 0!important;
+      width:100%!important; margin:0!important; padding:0!important; background:#fff!important;
+      color:#000!important; overflow:visible!important;
+    }
+    #printable-report-area > .print-page {
+      display:flex!important; flex-direction:column!important; box-sizing:border-box!important;
+      width:100%!important; height:194mm!important; min-height:194mm!important; max-height:194mm!important;
+      overflow:hidden!important; break-after:page!important; page-break-after:always!important;
+      margin:0!important; padding:0!important;
+    }
+    #printable-report-area > .print-page:last-child { break-after:auto!important; page-break-after:auto!important; }
+    .final-summary-print-page .print-final-heading { min-height:9mm!important; max-height:11mm!important; margin-bottom:1.5mm!important; padding:0!important; }
+    .final-summary-print-page .print-final-heading-main { font-size:11pt!important; }
+    .final-summary-print-page .print-final-heading-sub,.final-summary-print-page .print-final-heading-college { font-size:6.5pt!important; }
+    .final-summary-print-page > .text-center { margin-top:0!important; }
+    .final-summary-print-page .grid { gap:2mm!important; margin:1.5mm 0 2mm!important; padding:1.5mm!important; }
+    .final-summary-print-page .grid p { font-size:7pt!important; line-height:1.1!important; }
+    .final-summary-print-page .grid .text-base { font-size:9pt!important; }
+    .final-summary-print-page h3 { font-size:8pt!important; margin:1mm 0!important; padding:0 0 1mm!important; }
+    .final-summary-print-page .print-settlement-table { width:100%!important; table-layout:fixed!important; border-collapse:collapse!important; }
+    .final-summary-print-page .print-settlement-table th,
+    .final-summary-print-page .print-settlement-table td { font-size:6.6pt!important; line-height:1.05!important; padding:1mm .6mm!important; overflow-wrap:anywhere!important; }
+    .final-summary-print-page .print-settlement-table td:last-child { height:7mm!important; }
+    .final-summary-print-page > div:nth-last-child(2) { margin-top:auto!important; padding-top:4mm!important; flex-shrink:0!important; }
+    .final-summary-print-page > div:nth-last-child(2) > div { width:38%!important; padding-top:8mm!important; }
+    .final-summary-print-page > div:nth-last-child(2) p { font-size:7pt!important; }
+    .final-summary-print-page > div:last-child { margin-top:3mm!important; font-size:5.5pt!important; }
+
+    /* Monthly chart is always included as page 2; compress the complete
+       member-by-day matrix to one landscape sheet without dropping members. */
+    .monthly-meal-print-page { display:flex!important; flex-direction:column!important; }
+    .monthly-meal-print-page .print-chart-title { font-size:10pt!important; line-height:1.1!important; margin:0 0 1mm!important; }
+    .monthly-meal-print-page .print-chart-subtitle { font-size:6.5pt!important; line-height:1.1!important; margin-bottom:1.5mm!important; }
+    .monthly-meal-print-page .print-meal-matrix { width:100%!important; height:auto!important; table-layout:fixed!important; border-collapse:collapse!important; }
+    .monthly-meal-print-page .print-meal-matrix .meal-name-col { width:27mm!important; }
+    .monthly-meal-print-page .print-meal-matrix .meal-total-col { width:13mm!important; }
+    .monthly-meal-print-page .print-meal-matrix .meal-day-col { width:auto!important; }
+    .monthly-meal-print-page .print-meal-matrix th,
+    .monthly-meal-print-page .print-meal-matrix td { font-size:4.7pt!important; line-height:1!important; height:5.2mm!important; padding:.45mm .15mm!important; white-space:nowrap!important; }
+    .monthly-meal-print-page .print-meal-matrix .member-name { font-size:5pt!important; padding-left:.8mm!important; }
+    .monthly-meal-print-page > div:nth-last-child(2) { margin-top:2mm!important; font-size:6pt!important; }
+    .monthly-meal-print-page > div:last-child { margin-top:1mm!important; font-size:5.5pt!important; }
+    .no-print, button, input, select { display:none!important; }
+  }
+</style>
+
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col pb-10">
 
@@ -529,7 +599,7 @@
           </div>
         </div>
 
-        <div onclick="showMealRateFormula()" role="button" tabindex="0" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between cursor-pointer hover:border-emerald-300 transition">
+        <div onclick="showMealRateFormula()" role="button" tabindex="0" class="meal-rate-highlight bg-white p-5 rounded-2xl shadow-sm border border-emerald-200 flex items-center justify-between cursor-pointer hover:border-emerald-400 transition">
           <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">বর্তমান মিল রেট (হিসাব দেখতে চাপ দিন)</p>
             <h3 class="text-2xl font-bold text-emerald-600 mt-1">৳<span id="dash-meal-rate">0.00</span></h3>
@@ -3541,44 +3611,50 @@
     }
 
     function triggerPDFPrint() {
+      const paper = document.getElementById('final-print-paper')?.value || 'a4';
+      const filterActiveOnly = document.getElementById('print-filter-active-only')?.checked || false;
+      const report = document.getElementById('printable-report-area');
+      if (!report) {
+        alert('প্রিন্ট রিপোর্ট পাওয়া যায়নি। পেজটি রিফ্রেশ করে আবার চেষ্টা করুন।');
+        return;
+      }
       try {
-        renderMonthlyMealChart();
+        // Build both report sections from the latest live data before opening
+        // the browser's native print dialog in this same tab.
         renderAllViews();
-        const filterActiveOnly = document.getElementById('print-filter-active-only')?.checked || false;
-        const printRows = document.querySelectorAll('#print-summary-tbody tr');
-        printRows.forEach(row => {
-          row.style.display = (!filterActiveOnly || row.dataset.hasData !== "false") ? '' : 'none';
+        renderMonthlyMealChart();
+        const rows = report.querySelectorAll('#print-summary-tbody tr');
+        rows.forEach(row => {
+          row.dataset.printHidden = (!filterActiveOnly || row.dataset.hasData !== 'false') ? 'false' : 'true';
+          row.style.display = row.dataset.printHidden === 'true' ? 'none' : '';
         });
-        const paper = document.getElementById('final-print-paper')?.value || 'a4';
+
         document.body.classList.remove('final-print-a4', 'final-print-legal');
         document.body.classList.add(paper === 'legal' ? 'final-print-legal' : 'final-print-a4');
-        // Must stay synchronous with the tap for Android Chrome's print permission.
-        if (typeof window.print !== 'function') {
-          throw new Error('এই ব্রাউজারে window.print সমর্থিত নয়');
+        let pageRule = document.getElementById('runtime-final-print-page-rule');
+        if (!pageRule) {
+          pageRule = document.createElement('style');
+          pageRule.id = 'runtime-final-print-page-rule';
+          document.head.appendChild(pageRule);
         }
-        let printCleanupDone = false;
-        const cleanup = () => {
-          if (printCleanupDone) return;
-          printCleanupDone = true;
-          document.body.classList.remove('final-print-a4', 'final-print-legal');
-          printRows.forEach(row => row.style.display = '');
-          window.removeEventListener('afterprint', cleanup);
-          document.removeEventListener('visibilitychange', onVisibilityChange);
-        };
-        const onVisibilityChange = () => {
-          if (document.visibilityState === 'visible' && printCleanupDone === false) {
-            // Some mobile browsers return from the print sheet without firing afterprint.
-            setTimeout(cleanup, 300);
-          }
-        };
-        window.addEventListener('afterprint', cleanup, { once: true });
-        document.addEventListener('visibilitychange', onVisibilityChange);
-        window.focus();
-        // Keep this call synchronous with the button tap (required by mobile Chrome).
-        window.print();
+        pageRule.textContent = `@media print { @page { size: ${paper === 'legal' ? 'legal' : 'A4'} landscape; margin: 6mm; } }`;
+        // Give the browser a frame to apply print styles, then invoke native
+        // Print UI. The user can choose a printer or Save as PDF there.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            window.focus();
+            window.print();
+            rows.forEach(row => {
+              row.style.display = '';
+              delete row.dataset.printHidden;
+            });
+            document.body.classList.remove('final-print-a4', 'final-print-legal');
+          });
+        });
       } catch (err) {
         console.error('Print failed:', err);
-        alert('প্রিন্ট ডায়ালগ খোলা যায়নি। Chrome-এর মেনু থেকে Share > Print নির্বাচন করে আবার চেষ্টা করুন।');
+        document.body.classList.remove('final-print-a4', 'final-print-legal');
+        alert('প্রিন্ট ডায়ালগ খোলা যায়নি। Chrome-এর মেনু থেকে Print নির্বাচন করে চেষ্টা করুন।');
       }
     }
   </script>
