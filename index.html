@@ -3165,35 +3165,208 @@
     }
 
     function printBlankMealSheet() {
-      const selectedIds = Array.from(document.querySelectorAll('#meal-sheet-member-list .meal-sheet-member:checked')).map(x => String(x.value));
-      if (!selectedIds.length) { showToast('অন্তত একজন মেম্বার নির্বাচন করুন', true); return; }
+      // Only checked members are included; saved meal entries are never read.
+      const selectedIds = Array.from(
+        document.querySelectorAll('#meal-sheet-member-list .meal-sheet-member:checked')
+      ).map(cb => String(cb.value));
+
+      if (!selectedIds.length) {
+        showToast('অন্তত একজন মেম্বার নির্বাচন করুন', true);
+        return;
+      }
+
       const paper = document.getElementById('meal-sheet-paper')?.value || 'a4';
-      const members = (window.appData.members || []).filter(m => selectedIds.includes(String(m.id)));
-      const m = String(window.appData.activeMonth || '').match(/^(\d{4})-(\d{2})$/);
-      const year = m ? Number(m[1]) : new Date().getFullYear();
-      const month = m ? Number(m[2]) : new Date().getMonth()+1;
+      const members = (window.appData.members || []).filter(
+        member => selectedIds.includes(String(member.id))
+      );
+
+      if (!members.length) {
+        showToast('নির্বাচিত সদস্য পাওয়া যায়নি। তালিকা আবার লোড করুন।', true);
+        return;
+      }
+
+      const monthMatch = String(window.appData.activeMonth || '').match(/^(\d{4})-(\d{2})$/);
+      const year = monthMatch ? Number(monthMatch[1]) : new Date().getFullYear();
+      const month = monthMatch ? Number(monthMatch[2]) : new Date().getMonth() + 1;
       const days = new Date(year, month, 0).getDate();
-      const monthLabel = document.getElementById('month-selector-label')?.innerText || `${year}-${String(month).padStart(2,'0')}`;
-      const head = document.getElementById('blank-meal-sheet-head');
-      const body = document.getElementById('blank-meal-sheet-body');
-      const colgroup = document.getElementById('blank-meal-sheet-colgroup');
-      const titleMonth = document.getElementById('blank-meal-sheet-month');
-      const count = document.getElementById('blank-meal-sheet-member-count');
-      if (!head || !body) return;
-      titleMonth.innerText = monthLabel;
-      count.innerText = members.length;
-      if (colgroup) colgroup.innerHTML = `<col class="sheet-name-col">${Array.from({length:days},()=>'<col class="sheet-day-col">').join('')}<col class="sheet-total-col">`;
-      head.innerHTML = `<tr><th>মেম্বারের নাম</th>${Array.from({length:days},(_,i)=>`<th>${i+1}</th>`).join('')}<th>মোট</th></tr>`;
-      body.innerHTML = members.map(member => {
-        const safeName = String(member.name || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        const safeRoom = String(member.room || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        return `<tr><td class="sheet-member-name">${safeName}${safeRoom ? `<div class="sheet-designation">${safeRoom}</div>` : ''}</td>${Array.from({length:days},()=>'<td class="blank-input-cell"></td>').join('')}<td class="blank-total-cell"></td></tr>`;
+      const monthLabel = document.getElementById('month-selector-label')?.innerText ||
+        `${year}-${String(month).padStart(2, '0')}`;
+
+      const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[char]);
+
+      // Landscape printable dimensions after 4mm margins.
+      const isLegal = paper === 'legal';
+      const pageHeight = isLegal ? 216 : 210; // mm, landscape short edge
+      const pageWidth = isLegal ? 356 : 297;  // mm, landscape long edge
+      const contentHeight = pageHeight - 8;
+      const contentWidth = pageWidth - 8;
+      const headerReserve = 26; // heading, note, footer, margins and spacing
+      const tableHeight = Math.max(18, contentHeight - headerReserve);
+      const headerHeight = Math.min(7, Math.max(4, tableHeight * 0.045));
+      const rowHeight = Math.max(1.15, (tableHeight - headerHeight) / members.length);
+      const cellFont = Math.max(4.1, Math.min(6.4, rowHeight * 0.92));
+      const nameWidth = isLegal ? 35 : 30;
+      const totalWidth = 11;
+      const dayWidth = (contentWidth - nameWidth - totalWidth) / days;
+
+      const colgroup = `<col style="width:${nameWidth}mm">` +
+        Array.from({ length: days }, () => `<col style="width:${dayWidth.toFixed(3)}mm">`).join('') +
+        `<col style="width:${totalWidth}mm">`;
+
+      const header = `<tr><th>মেম্বারের নাম</th>${
+        Array.from({ length: days }, (_, i) => `<th>${i + 1}</th>`).join('')
+      }<th>মোট</th></tr>`;
+
+      // Deliberately blank cells: no meal data is copied into this printable sheet.
+      const rows = members.map(member => {
+        const name = escapeHTML(member.name || '');
+        return `<tr><td class="member-name">${name}</td>${
+          Array.from({ length: days }, () => '<td>&nbsp;</td>').join('')
+        }<td>&nbsp;</td></tr>`;
       }).join('');
-      document.body.classList.remove('meal-sheet-a4','meal-sheet-legal');
-      document.body.classList.add('meal-sheet-printing', paper === 'legal' ? 'meal-sheet-legal' : 'meal-sheet-a4');
-      const cleanup = () => { document.body.classList.remove('meal-sheet-printing','meal-sheet-a4','meal-sheet-legal'); window.removeEventListener('afterprint', cleanup); };
-      window.addEventListener('afterprint', cleanup);
-      setTimeout(() => window.print(), 100);
+
+      // Open synchronously from the button click so mobile browsers do not block it.
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        showToast('প্রিন্ট উইন্ডো খোলা যায়নি। ব্রাউজারের Pop-ups অনুমতি দিন।', true);
+        return;
+      }
+
+      const pageSize = isLegal ? 'legal landscape' : 'A4 landscape';
+      const printHTML = `<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>খালি মিল শীট - ${escapeHTML(monthLabel)}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: ${pageSize}; margin: 4mm; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0 !important; padding: 0 !important; width: 100%;
+    color: #000; background: #fff;
+    font-family: "Hind Siliguri", sans-serif !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  body {
+    height: ${contentHeight}mm;
+    max-height: ${contentHeight}mm;
+    overflow: hidden;
+    font-size: 8pt;
+  }
+  .sheet {
+    width: 100%; height: ${contentHeight}mm; max-height: ${contentHeight}mm;
+    display: flex; flex-direction: column; overflow: hidden;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .heading {
+    flex: 0 0 13mm; min-height: 13mm; max-height: 13mm;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: .3mm solid #222; padding-bottom: 1.5mm;
+  }
+  h1 { font-size: 14pt; line-height: 1.15; font-weight: 700; margin: 0; }
+  .sub { font-size: 8pt; line-height: 1.1; margin-top: 1mm; }
+  .count { font-size: 8pt; white-space: nowrap; }
+  .note {
+    flex: 0 0 5mm; min-height: 5mm; max-height: 5mm;
+    overflow: hidden; font-size: 6.5pt; line-height: 1.1;
+    padding: .7mm 1.5mm; margin: 1mm 0;
+    border: .2mm solid #777;
+  }
+  table {
+    flex: 0 0 ${tableHeight}mm; height: ${tableHeight}mm;
+    max-height: ${tableHeight}mm; width: 100%;
+    border-collapse: collapse; table-layout: fixed;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  thead { display: table-header-group; }
+  tbody { height: ${tableHeight - headerHeight}mm; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
+  thead tr { height: ${headerHeight.toFixed(3)}mm; }
+  tbody tr { height: ${rowHeight.toFixed(3)}mm; }
+  th, td {
+    border: .25mm solid #555; text-align: center; vertical-align: middle;
+    height: ${rowHeight.toFixed(3)}mm; max-height: ${rowHeight.toFixed(3)}mm;
+    padding: 0 .15mm; font-size: ${cellFont.toFixed(2)}pt;
+    line-height: 1; font-family: "Hind Siliguri", sans-serif !important;
+    overflow: hidden;
+  }
+  th { height: ${headerHeight.toFixed(3)}mm; background: #eef2f7; font-weight: 700; }
+  td.member-name {
+    text-align: left; padding-left: 1mm; font-weight: 600;
+    white-space: normal; overflow-wrap: anywhere;
+  }
+  .footer {
+    flex: 0 0 4mm; min-height: 4mm; max-height: 4mm;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-top: 1mm; font-size: 6.5pt; line-height: 1;
+    white-space: nowrap; overflow: hidden;
+  }
+  @media screen {
+    body { width: ${contentWidth}mm; margin: 10mm auto !important; }
+    .sheet { outline: 1px solid #ddd; }
+  }
+  @media print {
+    html, body { width: 100% !important; height: ${contentHeight}mm !important;
+      max-height: ${contentHeight}mm !important; overflow: hidden !important; }
+    .sheet, table { break-after: avoid !important; page-break-after: avoid !important; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="heading">
+    <div>
+      <h1>অফিসার্স মেস - ফৌজদারহাট ক্যাডেট কলেজ</h1>
+      <div class="sub">ম্যানুয়াল মিল শীট — ${escapeHTML(monthLabel)}</div>
+    </div>
+    <div class="count">সদস্য: ${members.length} জন</div>
+  </div>
+  <div class="note"><strong>নির্দেশনা:</strong> প্রতিদিনের ঘরে হাতে মোট মিল লিখুন। সকল ঘর খালি রাখা হয়েছে।</div>
+  <table>
+    <colgroup>${colgroup}</colgroup>
+    <thead>${header}</thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="footer">
+    <span>প্রতিদিনের ঘরে সদস্যের মোট মিল লিখুন।</span>
+    <span>মেস ম্যানেজার: ____________________</span>
+  </div>
+</div>
+<script>
+  (function () {
+    var started = false;
+    function startPrint() {
+      if (started) return;
+      started = true;
+      window.focus();
+      setTimeout(function () {
+        try { window.print(); } catch (e) { console.error('Print failed:', e); }
+      }, 250);
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(startPrint).catch(startPrint);
+      setTimeout(startPrint, 2500);
+    } else {
+      window.onload = startPrint;
+      setTimeout(startPrint, 1200);
+    }
+    window.onafterprint = function () {
+      setTimeout(function () { window.close(); }, 300);
+    };
+  })();
+<\/script>
+</body>
+</html>`;
+
+      printWindow.document.open();
+      printWindow.document.write(printHTML);
+      printWindow.document.close();
     }
 
     renderMealSheetMemberPicker();
