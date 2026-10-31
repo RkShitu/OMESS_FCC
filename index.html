@@ -227,6 +227,7 @@
       #printable-report-area, #printable-report-area * { visibility: visible; }
       #printable-report-area {
         display: block !important;
+        visibility: visible !important;
         position: absolute;
         left: 0;
         top: 0;
@@ -481,7 +482,7 @@
       </div>
 
       <!-- Summary Metric Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">মোট মিল (চলতি মাস)</p>
@@ -495,24 +496,43 @@
 
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
           <div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">মোট বাজার খরচ</p>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">সর্বমোট মেসের বাজার খরচ</p>
             <h3 class="text-2xl font-bold text-slate-800 mt-1">৳<span id="dash-total-bazaar">0</span></h3>
             <p class="text-xs text-slate-400 mt-1">চলতি মাসের মেস বাজার</p>
+            <button type="button" onclick="openBazaarBreakdownModal()" class="mt-2 text-xs font-bold text-brand-600 hover:text-brand-800 underline underline-offset-2">হিসাব দেখুন</button>
           </div>
           <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-xl">
             <i class="fa-solid fa-basket-shopping"></i>
           </div>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+        <div onclick="showMealRateFormula()" role="button" tabindex="0" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between cursor-pointer hover:border-emerald-300 transition">
           <div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">বর্তমান মিল রেট</p>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">বর্তমান মিল রেট (হিসাব দেখতে চাপ দিন)</p>
             <h3 class="text-2xl font-bold text-emerald-600 mt-1">৳<span id="dash-meal-rate">0.00</span></h3>
             <p class="text-xs text-slate-400 mt-1">বাজার খরচ ÷ মোট মিল</p>
           </div>
           <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl">
             <i class="fa-solid fa-calculator"></i>
           </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">মোট টাকা জমা</p>
+            <h3 class="text-2xl font-bold text-emerald-600 mt-1">৳<span id="dash-total-deposits">0</span></h3>
+            <p class="text-xs text-slate-400 mt-1">চলতি মাসে সকল সদস্যের জমা</p>
+          </div>
+          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-wallet"></i></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">মোট এক্সট্রা বিল</p>
+            <h3 class="text-2xl font-bold text-indigo-600 mt-1">৳<span id="dash-total-extra-bills">0</span></h3>
+            <p class="text-xs text-slate-400 mt-1">সদস্যভিত্তিক অতিরিক্ত বিল</p>
+          </div>
+          <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-receipt"></i></div>
         </div>
 
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
@@ -930,8 +950,14 @@
               </h2>
               <p class="text-xs text-slate-500 mt-0.5">মোট এন্ট্রি: <span id="extrabill-count-badge">0</span>টি</p>
             </div>
-            <div class="text-xs font-bold bg-indigo-50 text-indigo-700 px-3.5 py-2 rounded-xl border border-indigo-200 shadow-xs">
-              সর্বমোট এক্সট্রা বিল: ৳<span id="extrabill-total-display">0</span>
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="text-xs font-bold bg-indigo-50 text-indigo-700 px-3.5 py-2 rounded-xl border border-indigo-200 shadow-xs">
+                সর্বমোট এক্সট্রা বিল: ৳<span id="extrabill-total-display">0</span>
+              </div>
+              <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl cursor-pointer">
+                <input type="checkbox" id="deduct-extra-from-bazaar" onchange="toggleExtraBillBazaarDeduction(this.checked)" class="w-4 h-4 accent-amber-600">
+                <span>এক্সট্রা বিল বাজার থেকে বাদ যাবে?</span>
+              </label>
             </div>
           </div>
 
@@ -1378,6 +1404,29 @@
     </div>
   </div>
 
+  <!-- Bazaar and extra-bill breakdown modal -->
+  <div id="bazaar-breakdown-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-3 no-print">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-4 sm:p-6 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+        <div><h3 class="text-lg font-bold text-slate-800">বাজার ও এক্সট্রা বিলের বিস্তারিত হিসাব</h3><p id="bazaar-breakdown-month" class="text-xs text-slate-500"></p></div>
+        <button type="button" onclick="closeBazaarBreakdownModal()" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="overflow-auto flex-1 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
+          <div class="rounded-xl bg-amber-50 p-3"><div class="text-xs text-slate-500">মোট বাজার</div><div class="text-lg font-bold text-amber-700">৳<span id="breakdown-bazaar-total">0</span></div></div>
+          <div class="rounded-xl bg-indigo-50 p-3"><div class="text-xs text-slate-500">মোট এক্সট্রা বিল</div><div class="text-lg font-bold text-indigo-700">৳<span id="breakdown-extra-total">0</span></div></div>
+          <div class="rounded-xl bg-slate-100 p-3"><div class="text-xs text-slate-500">সর্বমোট মেসের বাজার খরচ</div><div class="text-lg font-bold text-slate-800">৳<span id="breakdown-grand-total">0</span></div></div>
+        </div>
+        <h4 class="font-bold text-sm text-slate-700">বাজারের এন্ট্রি</h4>
+        <div class="overflow-x-auto border rounded-xl"><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="p-2 text-left">তারিখ</th><th class="p-2 text-left">বাজারকারী</th><th class="p-2 text-left">বিবরণ</th><th class="p-2 text-right">টাকা</th></tr></thead><tbody id="breakdown-bazaar-rows"></tbody></table></div>
+        <h4 class="font-bold text-sm text-slate-700">এক্সট্রা বিলের সারাংশ</h4>
+        <div class="overflow-x-auto border rounded-xl"><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="p-2 text-left">তারিখ</th><th class="p-2 text-left">সদস্য</th><th class="p-2 text-left">বিবরণ</th><th class="p-2 text-right">টাকা</th></tr></thead><tbody id="breakdown-extra-rows"></tbody></table></div>
+        <p class="text-xs text-slate-500">মিল রেটের হিসাব: মোট বাজার খরচ ÷ মোট মিল। এক্সট্রা বিল সদস্যভিত্তিক আলাদাভাবে যোগ হয়; এটি মিল রেটের মধ্যে অন্তর্ভুক্ত নয়।</p>
+      </div>
+      <div class="pt-3 flex justify-end"><button type="button" onclick="closeBazaarBreakdownModal()" class="px-5 py-2 rounded-xl bg-slate-800 text-white font-bold text-sm">বন্ধ করুন</button></div>
+    </div>
+  </div>
+
   <!-- Detailed Monthly Meals Breakdown Modal -->
   <div id="detailed-meals-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4 no-print">
     <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full p-6 space-y-4 border border-slate-100 max-h-[90vh] flex flex-col">
@@ -1707,7 +1756,8 @@
           bazaar: [],
           extraBills: [],
           deposits: [],
-          adjustments: {}
+          adjustments: {},
+          deductExtraBillsFromBazaar: false
         };
       }
       return window.appData.monthData[monthKey];
@@ -1999,16 +2049,28 @@
         });
       });
 
-      const totalBazaar = (mData.bazaar || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-      const mealRate = totalMeals > 0 ? (totalBazaar / totalMeals) : 0;
+      const totalBazaarGross = (mData.bazaar || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const totalDeposits = (mData.deposits || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const totalExtraBills = (mData.extraBills || []).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-      const cashBalance = totalDeposits - totalBazaar;
+      const deductExtraBills = !!mData.deductExtraBillsFromBazaar;
+      const totalBazaar = Math.max(0, totalBazaarGross - (deductExtraBills ? totalExtraBills : 0));
+      const mealRate = totalMeals > 0 ? (totalBazaar / totalMeals) : 0;
+      // Cash movement follows the actual bazaar payments; the checkbox only reallocates
+      // the bazaar amount between shared meal cost and member-specific extra bills.
+      const cashBalance = totalDeposits - totalBazaarGross;
+      const deductionControl = document.getElementById('deduct-extra-from-bazaar');
+      if (deductionControl) deductionControl.checked = deductExtraBills;
 
       document.getElementById('dash-total-meals').innerText = toBnNum(totalMeals, 0);
       document.getElementById('dash-total-bazaar').innerText = toBnNum(totalBazaar, 0);
       document.getElementById('dash-meal-rate').innerText = mealRate.toFixed(2);
       document.getElementById('dash-cash-balance').innerText = toBnNum(cashBalance, 0);
+      const depositMetric = document.getElementById('dash-total-deposits');
+      const extraMetric = document.getElementById('dash-total-extra-bills');
+      if (depositMetric) depositMetric.innerText = toBnNum(totalDeposits, 0);
+      if (extraMetric) extraMetric.innerText = toBnNum(totalExtraBills, 0);
+      const cashCaption = document.querySelector('#dash-cash-balance')?.parentElement?.querySelector('p:last-child');
+      if (cashCaption) cashCaption.innerText = cashBalance >= 0 ? 'মোট জমা − বাজারের মোট পরিশোধ (এক্সট্রাসহ)' : 'বাজারের মোট পরিশোধ জমার চেয়ে বেশি — ঘাটতি';
 
       const memberExtraBillsMap = {};
       getSortedMembers().forEach(m => memberExtraBillsMap[m.id] = 0);
@@ -2119,7 +2181,7 @@
       renderDashboardMealChart(activeM, mData, daysInMonth);
       renderDashboardMonthlyMealTable(activeM, mData, daysInMonth);
 
-      renderFinalSummaryTab(memberMealsMap, memberExtraBillsMap, mealRate, totalMeals, totalBazaar, totalDeposits);
+      renderFinalSummaryTab(memberMealsMap, memberExtraBillsMap, mealRate, totalMeals, totalBazaar, totalDeposits, totalBazaarGross);
       renderMonthlyMealChart();
       renderBazaarHistory();
       renderExtraBillsHistory();
@@ -2238,6 +2300,45 @@
       });
     }
 
+    function showMealRateFormula() {
+      const mData = getCurrentMonthData();
+      const bazaarTotal = (mData.bazaar || []).reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+      let mealsTotal = 0;
+      Object.values(mData.meals || {}).forEach(day => Object.values(day || {}).forEach(entry => mealsTotal += getEntryMealTotal(entry)));
+      const rate = mealsTotal > 0 ? bazaarTotal / mealsTotal : 0;
+      alert(`মিল রেটের হিসাব\\n\\nমোট বাজার খরচ: ৳${bazaarTotal.toFixed(2)}\\nমোট মিল: ${mealsTotal} টি\\n\\nমিল রেট = মোট বাজার খরচ ÷ মোট মিল\\n= ৳${bazaarTotal.toFixed(2)} ÷ ${mealsTotal}\\n= ৳${rate.toFixed(2)} প্রতি মিল`);
+    }
+
+    function openBazaarBreakdownModal() {
+      const mData = getCurrentMonthData();
+      const modal = document.getElementById('bazaar-breakdown-modal');
+      const bazaarRows = document.getElementById('breakdown-bazaar-rows');
+      const extraRows = document.getElementById('breakdown-extra-rows');
+      const members = getSortedMembers();
+      const memberName = id => (members.find(m => m.id === id) || {}).name || 'অজানা সদস্য';
+      const bazaar = mData.bazaar || [];
+      const extras = mData.extraBills || [];
+      const bazaarTotal = bazaar.reduce((n, x) => n + (parseFloat(x.amount) || 0), 0);
+      const extraTotal = extras.reduce((n, x) => n + (parseFloat(x.amount) || 0), 0);
+      document.getElementById('bazaar-breakdown-month').innerText = 'নির্বাচিত মাস: ' + (window.appData.activeMonth || '');
+      document.getElementById('breakdown-bazaar-total').innerText = bazaarTotal.toLocaleString('en-US');
+      document.getElementById('breakdown-extra-total').innerText = extraTotal.toLocaleString('en-US');
+      const deductExtras = !!mData.deductExtraBillsFromBazaar;
+      const netMarketTotal = Math.max(0, bazaarTotal - (deductExtras ? extraTotal : 0));
+      document.getElementById('breakdown-grand-total').innerText = netMarketTotal.toLocaleString('en-US');
+      const breakdownGrandLabel = document.querySelector('#breakdown-grand-total')?.parentElement?.previousElementSibling;
+      if (breakdownGrandLabel) breakdownGrandLabel.innerText = deductExtras
+        ? 'মোট বাজার − এক্সট্রা বিল (মেসের বাজার খরচ)'
+        : 'মোট বাজার (এক্সট্রা বিল বাদ নয়)';
+      bazaarRows.innerHTML = bazaar.length ? bazaar.map(x => `<tr class="border-t"><td class="p-2">${x.date || '-'}</td><td class="p-2">${memberName(x.memberId)}</td><td class="p-2">${x.description || x.desc || '-'}</td><td class="p-2 text-right font-semibold">৳${(parseFloat(x.amount)||0).toLocaleString('en-US')}</td></tr>`).join('') : '<tr><td colspan="4" class="p-4 text-center text-slate-400">কোনো বাজার এন্ট্রি নেই</td></tr>';
+      extraRows.innerHTML = extras.length ? extras.map(x => `<tr class="border-t"><td class="p-2">${x.date || '-'}</td><td class="p-2">${memberName(x.memberId)}</td><td class="p-2">${x.description || x.desc || '-'}</td><td class="p-2 text-right font-semibold">৳${(parseFloat(x.amount)||0).toLocaleString('en-US')}</td></tr>`).join('') : '<tr><td colspan="4" class="p-4 text-center text-slate-400">কোনো এক্সট্রা বিল নেই</td></tr>';
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+    }
+    function closeBazaarBreakdownModal() {
+      const modal = document.getElementById('bazaar-breakdown-modal');
+      modal.classList.add('hidden'); modal.classList.remove('flex');
+    }
+
     function openDetailedMealsModal() {
       renderModalMealChart();
       const modal = document.getElementById('detailed-meals-modal');
@@ -2295,7 +2396,7 @@
       }
     }
 
-    function renderFinalSummaryTab(memberMealsMap, memberExtraBillsMap, mealRate, totalMeals, totalBazaar, totalDeposits) {
+    function renderFinalSummaryTab(memberMealsMap, memberExtraBillsMap, mealRate, totalMeals, totalBazaar, totalDeposits, totalBazaarGross = totalBazaar) {
       const mData = getCurrentMonthData();
       if (!mData.adjustments) mData.adjustments = {};
 
@@ -2388,7 +2489,7 @@
         <td class="py-3 px-4 text-right font-bold">৳${sumAdj}</td>
         <td class="py-3 px-4 text-right font-bold">৳${sumDeposit}</td>
         <td class="py-3 px-4 text-right font-bold">৳${sumTotalCost.toFixed(1)}</td>
-        <td class="py-3 px-4 text-center text-xs text-slate-500 font-normal">ক্যাশ ব্যালেন্স: ৳${(sumDeposit - totalBazaar).toFixed(1)}</td>
+        <td class="py-3 px-4 text-center text-xs text-slate-500 font-normal">ক্যাশ ব্যালেন্স: ৳${(sumDeposit - totalBazaarGross).toFixed(1)}</td>
       `;
 
       document.getElementById('print-total-bazaar').innerText = totalBazaar.toLocaleString('en-US');
@@ -2796,6 +2897,21 @@
       document.getElementById('extrabill-date').value = today;
     }
 
+    function toggleExtraBillBazaarDeduction(checked) {
+      if (!window.isAdmin) {
+        const control = document.getElementById('deduct-extra-from-bazaar');
+        if (control) control.checked = !!getCurrentMonthData().deductExtraBillsFromBazaar;
+        showToast('এই সেটিং পরিবর্তনের জন্য এডমিন লগইন করুন', true);
+        return;
+      }
+      const mData = getCurrentMonthData();
+      mData.deductExtraBillsFromBazaar = !!checked;
+      persistData();
+      showToast(checked
+        ? 'এক্সট্রা বিল বাজার থেকে বাদ দিয়ে মিল রেট হিসাব হবে'
+        : 'এক্সট্রা বিল বাজার থেকে বাদ দেওয়া হবে না');
+    }
+
     function renderExtraBillsHistory() {
       const mData = getCurrentMonthData();
       const tbody = document.getElementById('extrabill-history-tbody');
@@ -3159,32 +3275,33 @@
     }
 
     function triggerPDFPrint() {
-      renderMonthlyMealChart();
-      renderAllViews();
-      const filterActiveOnly = document.getElementById('print-filter-active-only')?.checked || false;
-      const printRows = document.querySelectorAll('#print-summary-tbody tr');
-      printRows.forEach(row => {
-        if (filterActiveOnly) {
-          if (row.dataset.hasData === "false") {
-            row.style.display = 'none';
-          } else {
-            row.style.display = '';
-          }
-        } else {
-          row.style.display = '';
-        }
-      });
-
-      const paper = document.getElementById('final-print-paper')?.value || 'a4';
-      document.body.classList.remove('final-print-a4', 'final-print-legal');
-      document.body.classList.add(paper === 'legal' ? 'final-print-legal' : 'final-print-a4');
-      const cleanup = () => {
+      try {
+        renderMonthlyMealChart();
+        renderAllViews();
+        const filterActiveOnly = document.getElementById('print-filter-active-only')?.checked || false;
+        const printRows = document.querySelectorAll('#print-summary-tbody tr');
+        printRows.forEach(row => {
+          row.style.display = (!filterActiveOnly || row.dataset.hasData !== "false") ? '' : 'none';
+        });
+        const paper = document.getElementById('final-print-paper')?.value || 'a4';
         document.body.classList.remove('final-print-a4', 'final-print-legal');
-        printRows.forEach(row => row.style.display = '');
-        window.removeEventListener('afterprint', cleanup);
-      };
-      window.addEventListener('afterprint', cleanup);
-      setTimeout(() => window.print(), 80);
+        document.body.classList.add(paper === 'legal' ? 'final-print-legal' : 'final-print-a4');
+        // Must stay synchronous with the tap for Android Chrome's print permission.
+        if (typeof window.print !== 'function') {
+          throw new Error('এই ব্রাউজারে window.print সমর্থিত নয়');
+        }
+        const cleanup = () => {
+          document.body.classList.remove('final-print-a4', 'final-print-legal');
+          printRows.forEach(row => row.style.display = '');
+          window.removeEventListener('afterprint', cleanup);
+        };
+        window.addEventListener('afterprint', cleanup, { once: true });
+        window.focus();
+        window.print();
+      } catch (err) {
+        console.error('Print failed:', err);
+        alert('প্রিন্ট ডায়ালগ খোলা যায়নি। Chrome-এর মেনু থেকে Share > Print নির্বাচন করে আবার চেষ্টা করুন।');
+      }
     }
   </script>
 
